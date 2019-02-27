@@ -19,7 +19,7 @@ def remove_table(file_str):
     # \s*       zero or more whitespaces
     # \+        plus character
     # .*        any character zero or more times
-    # ---\+     three dashes followed by plus character. Even the smallest possible dashtable always satifies this condition
+    # ---\+     three dashes followed by plus character. Even the smallest possible dashtable always satisfies this condition
     # \n{1}     one line breaks that was previously added. remove itm to not add additional line breaks every time
     return re.sub(r'(-{2,}\s*\+)(.*)(---\+)\n{1}', '', file_str, flags=re.MULTILINE|re.DOTALL)
 
