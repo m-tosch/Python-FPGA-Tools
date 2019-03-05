@@ -2,7 +2,7 @@
 import os
 from os import path
 import re
-import dashtable
+# import dashtable
 import datetime
 
 
@@ -75,6 +75,24 @@ def get_constants_from_pkg(pkg_file_path):
     # \s*         zero or more whitespaces 
     # :           end delimiter (double colon)
     names = re.findall(r'constant\s+([a-z][a-z_0-9]*)\s*:', constants_file_str, flags=re.IGNORECASE)
+    print(names)
+
+    # type        "type"
+    # \s+         one or more whitespaces 
+    # [a-z]       identifiers must begin with a letter
+    # [a-z_0-9]*  any letter, underscore or digit. zero or more times
+    # \s+         one or more whitespaces
+    # is          "is"
+    # \s*         zero or more whitespaces
+    # \(          opening parenthesis (escaped)
+    # \s*         zero or more whitespaces
+    # (.[^)]+)    capture group. any character one or more times that is not )
+    # \s*         zero or more whitespaces
+    # \)          closing parenthesis (escaped)
+    # \s*         zero or more whitespaces
+    # ;           end delimiter (semicolon)
+    state_types = re.findall(r'type\s+([a-z][a-z_0-9]*)\s+is\s*\(\s*(.[^)]+)\s*\)\s*;', constants_file_str, flags=re.IGNORECASE)
+    print(state_types) # [('state_type', 'idle, calculation, finishing ')]  <- tuple access first element as state_types[0][0]
 
     # :           start delimiter (double colon)
     # \s*         zero or more whitespaces
@@ -136,6 +154,12 @@ def build_dash_table_vhdl(table_content, header=[[]], prefix="-- "):
     # print(dash_table_vhdl)
     return dash_table_vhdl
 
+def build_table_test(table_content):
+    """
+    debug
+    """
+    return table_content
+
 
 
 
@@ -167,10 +191,13 @@ def run(src_folder, def_pkg_path):
             ## 3. build new dash table
             header = [ ["Constant", "Type", "Default"] ]
             constants_list = [ [n,t,d] for (n,t,d) in zip(names, types, def_vals) if n in constants_occur ]
-            dash_table_vhdl = build_dash_table_vhdl(constants_list, header, "-- ")
+            # dash_table_vhdl = build_dash_table_vhdl(constants_list, header, "-- ")
+            dash_table_vhdl = "-- +" + '\n-- '.join(map(str, build_table_test(constants_list))) + "---+" # debug
+            # print(dash_table_vhdl)
 
             ## 4. add dash table to file str
             vhdl_file_str = add_table(vhdl_file_str, dash_table_vhdl)
+            #print(vhdl_file_str)
         
         ## 5. write back to VHDL file
         with open(vhdl_file, 'w') as f:

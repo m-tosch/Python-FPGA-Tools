@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 .mypy_cache/3.6
 
+# Visual Studio code
+launch.json
+.vscode/
+
 # C extensions
 *.so
 

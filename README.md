@@ -1,4 +1,4 @@
-# Python-FPGA-Tools
+# Quartus-Project-Generator
 
 ## Abstract
 

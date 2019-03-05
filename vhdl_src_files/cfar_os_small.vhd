@@ -18,21 +18,12 @@
 --entity xy is
 		-entity xy is
 		
--- +--------------------------------------+--------------------------------------------------+---------+
--- | Constant                             | Type                                             | Default |
--- +======================================+==================================================+=========+
--- | CFAR_GUARD_CELLS                     | integer range 0 to 20                            | 3       |
--- +--------------------------------------+--------------------------------------------------+---------+
--- | CFAR_LEADING_LAGGING_CELLS           | integer range -10 to 20                          | -5      |
--- +--------------------------------------+--------------------------------------------------+---------+
--- | CFAR_REFERENCE_CELLS                 | integer range 0 to 2* CFAR_LEADING_LAGGING_CELLS | 40      |
--- +--------------------------------------+--------------------------------------------------+---------+
--- | CFAR_OS_ALPHA_MULTIPLIER             | integer range -500 to 2000                       | 32      |
--- +--------------------------------------+--------------------------------------------------+---------+
--- | CFAR_OS_ALPHA_MULTIPLIER_LONGER_NAME | std_logic_vector(2 downto 0)                     | "010"   |
--- +--------------------------------------+--------------------------------------------------+---------+
--- | FFT_LENGTH                           | integer range 0 to 2**12                         | 2048    |
--- +--------------------------------------+--------------------------------------------------+---------+
+-- +['CFAR_GUARD_CELLS', 'integer range 0 to 20', '3']
+-- ['CFAR_LEADING_LAGGING_CELLS', 'integer range -10 to 20', '-5']
+-- ['CFAR_REFERENCE_CELLS', 'integer range 0 to 2* CFAR_LEADING_LAGGING_CELLS', '40']
+-- ['CFAR_OS_ALPHA_MULTIPLIER', 'integer range -500 to 2000', '32']
+-- ['CFAR_OS_ALPHA_MULTIPLIER_LONGER_NAME', 'std_logic_vector(2 downto 0)', '"010"']
+-- ['FFT_LENGTH', 'integer range 0 to 2**12', '2048']---+
 entity cfar_os is 
 	generic(
 		N : integer := 32

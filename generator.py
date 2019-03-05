@@ -11,8 +11,8 @@ mif_folder = ".\\mif_files\\"
 
 
 ## generate .mif files
-mif_writer.window_rom(mif_folder)
-mif_writer.distance_rom(mif_folder)
+# mif_writer.window_rom(mif_folder)
+# mif_writer.distance_rom(mif_folder)
 
 ## add dashtable with used constants to every VHDL source file
 constants_crawler.run(vhdl_src_folder, def_pkg_path)

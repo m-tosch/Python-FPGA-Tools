@@ -17,7 +17,13 @@ package p is
 	
 	--constant 
 	--						: std_logic := '0';
+    type RAMP_MODE_type is (SAWTOOTH, TRIANGULAR);
+    type CFAR_ALGORITHM_type is (SOCA,CA,OS);
 	
+    constant PLL_RAMP_MODE			: RAMP_MODE_type			:= SAWTOOTH;
+	
+
+    
 	
 end package;
 
