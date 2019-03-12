@@ -29,16 +29,17 @@ entity cfar_os is
 		N : integer := 32
 	);
 	PORT(
-		clk_20_i				: in std_logic;
-		reset_i				: in std_logic;
+		clk_20_i					: in std_logic;
+		reset_i						: in std_logic ;
 		
-		en_i							: in std_logic;
-		data_i						: in unsigned(N-1 downto 0);
-		average_signal_noise_i	: in unsigned(N-1 downto 0);
+		en_i						: in std_logic;
+		data_i						: in unsigned(N-1 downto 0) ;
+		average_signal_noise_i		: in unsigned(N-1 downto 0);
 		
 		valid_o						: out std_logic;
-		cfar_threshold_o			: out std_logic_vector(N-1 downto 0) -- U or X on very first run
-);
+		cfar_threshold_o			: out std_logic_vector(N-1 downto 0)
+		--valid_o						: out integer
+ );
 END cfar_os;
 
 ARCHITECTURE behav OF cfar_os IS
