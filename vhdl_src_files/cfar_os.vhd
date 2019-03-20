@@ -26,7 +26,8 @@ use work.pktec_evalboard_def_pkg.all;
 -- ['FFT_LENGTH', 'integer range 0 to 2**12', '2048']---+
 entity cfar_os is
 	generic(
-		N : integer := 32
+		N : integer := 32;
+		M : integer := 64
 	);
 	PORT(
 		clk_20_i					: in std_logic;

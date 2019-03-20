@@ -1,6 +1,5 @@
 #!/bin/bash
 import os
-from os import path
 import re
 from enum import Enum
 
@@ -18,8 +17,6 @@ def _get_raw_vhdl(file_path):
     return file_str
 
 def parse_entity(file_path):
-    file_str = _getRawVhdl(file_path)
-
     # [^- ]+        match anything that is NOT a dash or a whitespace one or more times
     # \s*           zero or more whitespaces
     # (entity       begin of capture group with "entity"
@@ -34,11 +31,13 @@ def parse_entity(file_path):
     # ;)            end of capture group with semicolon
     # \s*           zero or more whitespaces
     # architecture  "architecture"
-    m = re.search(r'[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture', file_str, flags=re.IGNORECASE)
+    m = re.search(r'[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture', _get_raw_vhdl(file_path), flags=re.IGNORECASE)
     entity_str = m.group(1)
+    generics = parse_entity_generics(entity_str)
+    ports = parse_entity_ports(entity_str)
+    return generics, ports
 
-    ####
-
+def parse_entity_ports(entity_str):
     # (port         begin of capture group with "port"
     # \s*           zero or more whitespaces
     # \(            opening parenthesis (escaped)
@@ -74,9 +73,9 @@ def parse_entity(file_path):
     port_types = re.findall(r':\s*[a-z]{2,}\s+(.+?)\s*(?:;|(?:\)\s*;\s*end))', port_str, flags=re.IGNORECASE)
     # a list of tuples
     ports = [(x,y,z) for x,y,z in zip(port_names, port_dirs, port_types)]
+    return ports
 
-    ####
-
+def parse_entity_generics(entity_str):
     # (generic      begin of capture group with "generic"
     # \s*           zero or more whitespaces
     # \(            opening parenthesis (escaped)
@@ -87,6 +86,8 @@ def parse_entity(file_path):
     # \s*           zero or more whitespaces
     # port          "port"
     m = re.search(r'(generic\s*\(.*\)\s*;)\s*port', entity_str, flags=re.IGNORECASE)
+    if m is None:
+        return []
     generic_str = m.group(1)
     # [a-z]         identifiers must begin with a letter
     # [a-z_0-9]*    any letter, underscore or digit. zero or more times
@@ -112,6 +113,34 @@ def parse_entity(file_path):
     generic_def_vals = re.findall(r':=\s*(.*?)\s*(?:;|(?:\)\s*;))', generic_str, flags=re.IGNORECASE)
     # a list of tuples
     generics = [(x,y,z) for x,y,z in zip(generic_names, generic_types, generic_def_vals)]
+    return generics
+
+def get_entity_inst(name, generics, ports, generic_values, port_signals):
+    # TODO also pass two lists. one with values for the generics and one with signals to connect to
+    #      -> instead of "todo" and "open"
+    # TODO DRY
+    # TODO check if len(generics) == len(generic_values) and len(ports) == len(port_signals)
+    inst_str = name + "_inst : entity work." + name + "\n"
+    ## GENERICS
+    if generics:
+        inst_str += "\tgeneric map(\n"
+        max_generic_len = len(max([g[0] for g in generics], key=len)) + 1 # find longest generic name
+        for g,v in zip(generics, generic_values):
+            inst_str += "\t\t" + "{1:<{0}} {2:<3} {3:<1}".format(max_generic_len, g[0], "=>", v) + ",\n"
+        inst_str = inst_str[:-2] # cut last \n and the ,
+        inst_str += "\n\t)\n"
+    ## PORTS
+    if ports: # should always be true
+        inst_str += "\tport map(\n"
+        max_port_len = len(max([p[0] for p in ports], key=len)) + 1 # find longest port name
+        # print("MAX: %s" % str(max_port_len))
+        for p, ps in zip(ports, port_signals):
+            inst_str += "\t\t" + "{1:<{0}} {2:<3} {3:<1}".format(max_port_len, p[0], "=>", ps) + ",\n"
+        inst_str = inst_str[:-2] # cut last \n and the ,
+        inst_str += "\n\t);"
+    return inst_str
+
+
 
 
 ## TBD if these classes must be used
@@ -119,7 +148,6 @@ def parse_entity(file_path):
 #     def __init__(self, name, type_):
 #         self.name = name
 #         self.type_ = type_
-
 #     def __repr__(self):
 #         return self.name + " " + self.type_
 
@@ -127,12 +155,11 @@ def parse_entity(file_path):
 #     def __init__(self, name, type_, dir):
 #         super(self.__class__, self).__init__(name, type_)
 #         self.dir = dir
-
 #     def __repr__(self):
 #         return self.name + " : " + self.dir.name.lower() + " " + self.type_
 
 # class Dir(Enum):
 #     IN, OUT, INOUT = [2**x for x in range(3)] # 1, 2, 4
 
-
-parse_entity("C:\\Users\\DE6AK018\\Documents\\TortoiseGit\\Python-FPGA-Tools\\vhdl_src_files\\cfar_os.vhd")
+# parse_entity("C:\\Users\\DE6AK018\\Documents\\TortoiseGit\\Python-FPGA-Tools\\vhdl_src_files\\cfar_os.vhd")
+# parse_entity("C:\\Users\\Maxi\\Seafile\\Seafile\\My Library\\Masterarbeit\\Python-FPGA-Tools\\vhdl_src_files\\fft_wrapper.vhd")
