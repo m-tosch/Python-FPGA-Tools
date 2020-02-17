@@ -161,5 +161,5 @@ def get_entity_inst(name, generics, ports, generic_values, port_signals):
 # class Dir(Enum):
 #     IN, OUT, INOUT = [2**x for x in range(3)] # 1, 2, 4
 
-# parse_entity("C:\\Users\\DE6AK018\\Documents\\TortoiseGit\\Python-FPGA-Tools\\vhdl_src_files\\cfar_os.vhd")
-# parse_entity("C:\\Users\\Maxi\\Seafile\\Seafile\\My Library\\Masterarbeit\\Python-FPGA-Tools\\vhdl_src_files\\fft_wrapper.vhd")
+# parse_entity("cfar_os.vhd")
+# parse_entity("fft_wrapper.vhd")
