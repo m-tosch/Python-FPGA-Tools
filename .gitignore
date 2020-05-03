@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .mypy_cache/3.6
+.mypy_cache/3.7
 
 # Visual Studio code
 launch.json

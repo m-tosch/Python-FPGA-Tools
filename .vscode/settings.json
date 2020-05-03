@@ -1,0 +1,21 @@
+{
+    "python.pythonPath": "C:\\Users\\Maxi\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=79",
+        "--ignore=E203",
+    ],
+    "python.linting.lintOnSave": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "79"
+    ],
+    "python.autoComplete.addBrackets": true,
+    "python.editor.rulers": [
+        79
+    ],
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+}
