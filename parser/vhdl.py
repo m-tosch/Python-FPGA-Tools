@@ -1,20 +1,19 @@
 import re
 
 
-def _get_raw_vhdl(file_path):
+def _get_raw_vhdl(file_str):
     """
-    Removes all VHDL comments and substitutes all whitespaces/tabs/line breaks with a single whitespace
+    Removes all VHDL comments and substitutes all whitespaces/tabs/line breaks
+    with a single whitespace
     """
-    with open(file_path, "r") as f:
-        file_str = f.read()
     # remove all VHDL comments
     file_str = re.sub(r"(\s*--).*\n?", "", file_str, flags=re.MULTILINE)
-    # substitute all tabs, newlines and other whitespaces
+    # substitute all tabs, newlines, whitespaces with a single whitespace
     file_str = re.sub(r"\s+", " ", file_str).strip()
     return file_str
 
 
-def get_entity(file_path):
+def get_entity(file_str):
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
     # \s*               zero or more whitespaces
@@ -34,7 +33,7 @@ def get_entity(file_path):
     # architecture      "architecture"
     m = re.search(
         r"[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture",
-        _get_raw_vhdl(file_path),
+        _get_raw_vhdl(file_str),
         flags=re.IGNORECASE,
     )
     entity_str = m.group(1)
