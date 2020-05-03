@@ -5,7 +5,6 @@ __pycache__/
 
 # Visual Studio code
 launch.json
-.vscode/
 
 # C extensions
 *.so
