@@ -1,19 +1,30 @@
 import re
 
+# TODO decide on structure!
+# from parser import vhdl
 
-def _get_raw_vhdl(file_str):
+# vhdl.get_entity()
+# vhdl.get_ports()
+# vhdl.get_generics()
+
+# TODO
+# setup testing
+# input with no vhdl content? if group(1) else None   and return?
+
+
+def _get_raw_vhdl(buffer):
     """
     Removes all VHDL comments and substitutes all whitespaces/tabs/line breaks
     with a single whitespace
     """
     # remove all VHDL comments
-    file_str = re.sub(r"(\s*--).*\n?", "", file_str, flags=re.MULTILINE)
+    buffer = re.sub(r"(\s*--).*\n?", "", buffer, flags=re.MULTILINE)
     # substitute all tabs, newlines, whitespaces with a single whitespace
-    file_str = re.sub(r"\s+", " ", file_str).strip()
-    return file_str
+    buffer = re.sub(r"\s+", " ", buffer).strip()
+    return buffer
 
 
-def get_entity(file_str):
+def get_entity(buffer):
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
     # \s*               zero or more whitespaces
@@ -33,17 +44,20 @@ def get_entity(file_str):
     # architecture      "architecture"
     m = re.search(
         r"[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture",
-        _get_raw_vhdl(file_str),
+        _get_raw_vhdl(buffer),
         flags=re.IGNORECASE,
     )
-    entity_str = m.group(1)
-    # generics = get_entity_generics(entity_str)
-    # ports = get_entity_ports(entity_str)
+    entity = m.group(1)
+    # generics = get_entity_generics(entity)
+    # ports = get_entity_ports(entity)
     # return generics, ports
-    return entity_str
+    return entity
 
 
-def get_entity_ports(entity_str):
+def get_ports(buffer):
+    # extract the entity string if it exists
+    entity = get_entity(buffer)
+
     # (                 begin of capture group---------------------ENTITY PORTS
     #     port          "port"
     #     \s*           zero or more whitespaces
@@ -55,9 +69,7 @@ def get_entity_ports(entity_str):
     #     \s*           zero or more whitespaces
     #     end           "end"
     # )                 end of capture group
-    m = re.search(
-        r"(port\s*\(.*\)\s*;\s*end)", entity_str, flags=re.IGNORECASE
-    )
+    m = re.search(r"(port\s*\(.*\)\s*;\s*end)", entity, flags=re.IGNORECASE)
     port_str = m.group(1)
 
     # port variable names
@@ -112,7 +124,10 @@ def get_entity_ports(entity_str):
     return ports
 
 
-def get_entity_generics(entity_str):
+def get_generics(buffer):
+    # extract the entity string if it exists
+    entity = get_entity(buffer)
+
     # (                 begin of capture group
     #     generic       "generic"
     #     \s*           zero or more whitespaces
@@ -125,7 +140,7 @@ def get_entity_generics(entity_str):
     # \s*               zero or more whitespaces
     # port              "port"
     m = re.search(
-        r"(generic\s*\(.*\)\s*;)\s*port", entity_str, flags=re.IGNORECASE
+        r"(generic\s*\(.*\)\s*;)\s*port", entity, flags=re.IGNORECASE
     )
     if m is None:
         return []
