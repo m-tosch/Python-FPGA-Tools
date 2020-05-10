@@ -1,6 +1,4 @@
 import unittest
-
-# from regex_fun import vhdl
 from regex_fun import vhdl
 
 
@@ -8,7 +6,6 @@ class TestVHDL(unittest.TestCase):
     def setUp(self):
         with open("./seven_segment_display.vhd", "r") as f:
             self.buffer = f.read()
-            print(self.buffer)
 
     # def tearDown(self):
     #     pass
