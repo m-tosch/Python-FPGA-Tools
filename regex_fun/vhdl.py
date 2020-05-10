@@ -1,14 +1,7 @@
 import re
 
-# TODO decide on structure!
-# from parser import vhdl
-
-# vhdl.get_entity()
-# vhdl.get_ports()
-# vhdl.get_generics()
 
 # TODO
-# setup testing
 # input with no vhdl content? if group(1) else None   and return?
 
 
@@ -55,6 +48,13 @@ def get_entity(buffer):
 
 
 def get_ports(buffer):
+    # TODO
+    # port names can be on the same line but separated by a comma
+    # clk, reset : in std_logic;
+    # instead of
+    # clk : in std_logic;
+    # reset : in std_logic;
+
     # extract the entity string if it exists
     entity = get_entity(buffer)
 
