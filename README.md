@@ -11,5 +11,5 @@ TODO
 test_vhdl.py
 
 ```cmd
-python -m unittest test_vhdl
+python -m tests.test_vhdl
 ```
