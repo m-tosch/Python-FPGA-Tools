@@ -1,8 +1,8 @@
 import re
 
-
 # TODO
 # input with no vhdl content? if group(1) else None   and return?
+# maybe more detailed "classes" e.g. Entity(), Package() with parser methods
 
 
 def _get_raw_vhdl(buffer):
@@ -11,8 +11,16 @@ def _get_raw_vhdl(buffer):
     with a single whitespace
     """
     # remove all VHDL comments
+    # (                 begin of capture group
+    #     \s*           zero or more whitespaces
+    #     --            two dashes
+    # )                 end of capture group
+    # .*                any character zero or more times
+    # \n?               line break. lazy evaluation
     buffer = re.sub(r"(\s*--).*\n?", "", buffer, flags=re.MULTILINE)
     # substitute all tabs, newlines, whitespaces with a single whitespace
+    # the .strip() removes any leading and trailing whitespaces
+    # \s+               one ore more whitespaces
     buffer = re.sub(r"\s+", " ", buffer).strip()
     return buffer
 
@@ -196,3 +204,68 @@ def get_generics(buffer):
         for x, y, z in zip(generic_names, generic_types, generic_def_vals)
     ]
     return generics
+
+
+def get_constants_from_pkg(buffer):
+    """
+    Gets all constants names from def file specified by function argument
+    :param buffer:   str
+    :type pkg_file_path:    str
+    :return:                a tuple of str lists [name, type, default value] for every constant
+    :rtype:                 TODO
+    """
+    buffer = _get_raw_vhdl(buffer)
+
+    # constant          "constant"
+    # \s+               one or more whitespaces
+    # (                 begin of capture group
+    #     [a-z]         identifiers must begin with a letter
+    #     [a-z_0-9]*    any letter, underscore or digit. zero or more times
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # :                 double colon
+    names = re.findall(
+        r"constant\s+([a-z][a-z_0-9]*)\s*:", buffer, flags=re.IGNORECASE,
+    )
+
+    # TODO evaluate if this is needed
+    # # type              "type"
+    # # \s+               one or more whitespaces
+    # # [a-z]             identifiers must begin with a letter
+    # # [a-z_0-9]*        any letter, underscore or digit. zero or more times
+    # # \s+               one or more whitespaces
+    # # is                "is"
+    # # \s*               zero or more whitespaces
+    # # \(                opening parenthesis (escaped)
+    # # \s*               zero or more whitespaces
+    # # (.[^)]+)          capture group. any char one or more times that's not)
+    # # \s*               zero or more whitespaces
+    # # \)                closing parenthesis (escaped)
+    # # \s*               zero or more whitespaces
+    # # ;                 semicolon
+    # state_types = re.findall(
+    #     r"type\s+([a-z][a-z_0-9]*)\s+is\s*\(\s*(.[^)]+)\s*\)\s*;",
+    #     buffer,
+    #     flags=re.IGNORECASE,
+    # )
+    # # [('state_type', 'idle, calculation, finishing ')]
+    # #  ^tuple access first element as state_types[0][0]
+
+    # :                 double colon
+    # \s*               zero or more whitespaces
+    # (                 begin of capture group
+    #     .*?           any character zero or more times. lazy evaluation
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # :=                double colon and equals sign
+    types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
+
+    # :=                double colon and equals sign
+    # \s*               zero or more whitespaces
+    # (                 begin of capture group
+    #     .*?           any character zero or more times. lazy evaluation
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # ;                 semicolon
+    def_vals = re.findall(r":=\s*(.*?)\s*;", buffer, flags=re.IGNORECASE)
+    return (names, types, def_vals)
