@@ -4,7 +4,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setuptools.setup(
-    name="regex_fun-m-tosch",
+    name="regex_fun",
     version="0.0.1",
     author="Maximilian Tosch",
     author_email="empty@empty.com",
@@ -20,4 +20,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
+    install_requires=[],
 )

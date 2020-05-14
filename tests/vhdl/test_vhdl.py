@@ -8,7 +8,7 @@ from regex_fun import vhdl
 
 class TestVHDL(unittest.TestCase):
     def setUp(self):
-        with open("tests/module.vhd", "r") as f:
+        with open("tests/vhdl/module.vhd", "r") as f:
             self.buffer = f.read()
 
     # def tearDown(self):
@@ -20,7 +20,6 @@ class TestVHDL(unittest.TestCase):
     def test_module_ports(self):
         # action
         ports = vhdl.get_ports(self.buffer)
-        print(ports)
         ret = [
             ("clk", "in", "std_logic"),
             ("reset", "in", "std_logic"),
