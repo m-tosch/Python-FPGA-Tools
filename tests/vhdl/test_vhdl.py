@@ -15,7 +15,11 @@ class TestVHDL(unittest.TestCase):
     #     pass
 
     def test_module_entity(self):
-        pass
+        # action
+        entity = vhdl.get_entity(self.buffer)
+        ent = "entity module is port( clk : in std_logic; reset : in std_logic; var : out std_logic_vector(6 downto 0)); end module;"
+        # assert
+        self.assertEqual(entity, ent)
 
     def test_module_ports(self):
         # action

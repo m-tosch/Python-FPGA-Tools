@@ -75,21 +75,23 @@ def get_ports(buffer):
     #     \)            closing parenthesis
     #     \s*           zero or more whitespaces
     #     ;             semicolon
-    #     \s*           zero or more whitespaces
-    #     end           "end"
     # )                 end of capture group
-    m = re.search(r"(port\s*\(.*\)\s*;\s*end)", entity, flags=re.IGNORECASE)
+    # \s*               zero or more whitespaces
+    # end               "end"
+    m = re.search(r"(port\s*\(.*\)\s*;)\s*end", entity, flags=re.IGNORECASE)
     port_str = m.group(1)
+    print(port_str)
 
     # port variable names
     # (                 begin of capture group----------------------------NAMES
     #     [a-z]         lowercase letter (identifiers must begin with that)
-    #     [a-z_0-9]*    lowercase letter/underscore/digit. zero or more times
+    #     [a-z_0-9,]    lowercase letter/underscore/digit or comma
+    #     *             zero or more times
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # :                 double colon
     port_names = re.findall(
-        r"([a-z][a-z_0-9]*)\s*:", port_str, flags=re.IGNORECASE
+        r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
     )
 
     # port directions (in, out, inout)
@@ -128,9 +130,35 @@ def get_ports(buffer):
         port_str,
         flags=re.IGNORECASE,
     )
+
+    # collect list of indices with , and their count
+    ll = [(i, n.count(",") + 1) for i, n in enumerate(port_names) if "," in n]
+    indices = list(list(zip(*ll))[0])
+    count = list(list(zip(*ll))[1])
+
+    # correct port names list (expand)
+    for i, pn in enumerate(port_names):
+        if "," in pn:
+            variables = pn.split(",")
+            port_names[i] = variables[0]
+            for j, v in enumerate(variables[1:], 1):
+                port_names.insert(i + j, v)
+
+    # TODO currently broken
+    # correct port dirs and types list (expand)
+    # c = 0
+    # for i, (pd, pt) in enumerate(zip(port_dirs, port_types)):
+    #     if i in indices:
+    #         ii = indices.index(i)
+    #         # c += count[ii] - 1
+    #         for j in range(1, count[ii]):
+    #             port_dirs.insert(i + c, port_dirs[c] + "X")
+    #             port_types.insert(i + c, port_types[c])
+    #             c += 1
+
     # names, directions and ports as a list of tuples
-    ports = [(x, y, z) for x, y, z in zip(port_names, port_dirs, port_types)]
-    return ports
+    # ports = [(x, y, z) for x, y, z in zip(port_names, port_dirs, port_types)]
+    return None
 
 
 def get_generics(buffer):
