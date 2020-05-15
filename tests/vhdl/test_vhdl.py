@@ -17,23 +17,27 @@ class TestVHDL(unittest.TestCase):
     def test_module_entity(self):
         # action
         entity = vhdl.get_entity(self.buffer)
-        ent = "entity module is port( clk : in std_logic; reset : in std_logic; var : out std_logic_vector(6 downto 0)); end module;"
+        expected = "entity module is port( clk : in std_logic; reset : in std_logic; var : out std_logic_vector(6 downto 0)); end module;"
         # assert
-        self.assertEqual(entity, ent)
+        self.assertEqual(entity, expected)
 
     def test_module_ports(self):
         # action
         ports = vhdl.get_ports(self.buffer)
-        ret = [
+        expected = [
             ("clk", "in", "std_logic"),
             ("reset", "in", "std_logic"),
             ("var", "out", "std_logic_vector(6 downto 0)"),
         ]
         # assert
-        self.assertEqual(ports, ret)
+        self.assertEqual(ports, expected)
 
     def test_module_generics(self):
-        pass
+        # action
+        generics = vhdl.get_generics(self.buffer)
+        expected = []
+        # assert
+        self.assertEqual(generics, expected)
 
 
 if __name__ == "__main__":
