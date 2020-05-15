@@ -1,8 +1,7 @@
 import re
-from typing import Dict, Tuple, List, Optional
+from typing import Tuple, List, Optional
 
 # TODO
-# input with no vhdl content? if group(1) else None   and return?
 # maybe more detailed "classes" e.g. Entity(), Package() with parser methods
 # install coverage package https://pypi.org/project/coverage/
 
@@ -20,7 +19,6 @@ def _get_raw_vhdl(buffer: str) -> str:
     Returns:
         str -- VHDL file string
     """
-
     # remove all VHDL comments
     # (                 begin of capture group
     #     \s*           zero or more whitespaces
