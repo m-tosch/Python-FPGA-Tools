@@ -50,9 +50,6 @@ def get_entity(buffer):
         flags=re.IGNORECASE,
     )
     entity = m.group(1)
-    # generics = get_entity_generics(entity)
-    # ports = get_entity_ports(entity)
-    # return generics, ports
     return entity
 
 
@@ -120,15 +117,15 @@ def get_ports(buffer):
 
     # account for  multiple port names in the same line, separated by a comma
     count = [pn.count(",") + 1 for pn in port_names]
-    # correct port names list
+    # correct port names list. every port variable is an entry in the list
     port_names_ = [pn_ for pn in port_names for pn_ in pn.split(",")]
-    # correct port dirs, types list
+    # correct port dirs, types list. expand lists depending on no. of ports
     port_dirs_, port_types_ = [], []
     for c, pd, pt in zip(count, port_dirs, port_types):
         port_dirs_.extend([pd] * c)
         port_types_.extend([pt] * c)
 
-    # names, directions and ports as a list of tuples
+    # port names, directions and types as a list of tuples
     ports = [
         (pn, pd, pt)
         for pn, pd, pt in zip(port_names_, port_dirs_, port_types_)
