@@ -83,7 +83,7 @@ def get_ports(buffer: str):
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # :                 double colon
-    port_names = re.findall(
+    _port_names = re.findall(
         r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
     )
     # port directions (in, out, inout)
@@ -93,7 +93,7 @@ def get_ports(buffer: str):
     #     [a-z]{2,}     lowercase letter. two or more times (shortest is "in")
     # )                 end of capture group
     # \s+               one or more whitespaces
-    port_dirs = re.findall(
+    _port_dirs = re.findall(
         r":\s*([a-z]{2,})\s+", port_str, flags=re.IGNORECASE
     )
     # port types (e.g. std_logic)
@@ -112,22 +112,21 @@ def get_ports(buffer: str):
     #     |             OR
     #     ;             semicolon
     # )                 end of non-capture group
-    port_types = re.findall(
+    _port_types = re.findall(
         r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
     )
     # account for  multiple port names in the same line, separated by a comma
-    count = [pn.count(",") + 1 for pn in port_names]
+    count = [_pn.count(",") + 1 for _pn in _port_names]
     # correct port names list. every port variable is an entry in the list
-    port_names_ = [pn_ for pn in port_names for pn_ in pn.split(",")]
+    port_names = [pn for _pn in _port_names for pn in _pn.split(",")]
     # correct port dirs, types list. expand lists depending on no. of ports
-    port_dirs_, port_types_ = [], []
-    for c, pd, pt in zip(count, port_dirs, port_types):
-        port_dirs_.extend([pd] * c)
-        port_types_.extend([pt] * c)
+    port_dirs, port_types = [], []
+    for c, _pd, _pt in zip(count, _port_dirs, _port_types):
+        port_dirs.extend([_pd] * c)
+        port_types.extend([_pt] * c)
     # port names, directions and types as a list of tuples
     ports = [
-        (pn, pd, pt)
-        for pn, pd, pt in zip(port_names_, port_dirs_, port_types_)
+        (pn, pd, pt) for pn, pd, pt in zip(port_names, port_dirs, port_types)
     ]
     return ports
 
@@ -183,16 +182,17 @@ def get_generics(buffer: str):
     #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of non-capture group
-    generic_type_to_end = re.findall(
+    _generic_type_to_end = re.findall(
         r":\s*(.*?)\s*(?:;|\)\s*;)", generic_str, flags=re.IGNORECASE
     )
     # generic variable types (e.g. integer)
     generic_types = [
-        gtte.split(":=")[0].strip() for gtte in generic_type_to_end
+        gtte.split(":=")[0].strip() for gtte in _generic_type_to_end
     ]
-    # generic default values, if one is specified with ":=" (e.g. 42)
+    # generic default values (e.g. 42)
+    # only if one is specified with ":=", None otherwise
     generic_def_vals = []
-    for gt in generic_type_to_end:
+    for gt in _generic_type_to_end:
         def_val = gt.split(":=")[1].strip() if ":=" in gt else None
         generic_def_vals.append(def_val)
 
