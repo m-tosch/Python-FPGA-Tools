@@ -1,4 +1,5 @@
 import re
+from typing import Dict, Tuple, List, Optional
 
 # TODO
 # input with no vhdl content? if group(1) else None   and return?
@@ -26,7 +27,21 @@ def _get_raw_vhdl(buffer: str):
     return buffer
 
 
-def get_entity(buffer: str):
+def get_entity(buffer: str) -> Optional[str]:
+    """Parses the entity out of an input string
+
+    The input is expected to be a string representing vhdl file content. If an
+    entity is defined within this content, an entity block is parsed if one is
+    found. If nothing is found that could be parsed, the function returns
+    None. If the entity could be parsed, it is returned as a string beginning
+    with "entity" and ending on "end <name>;" or "end entity;"
+
+    Arguments:
+        buffer {str} -- input string
+
+    Returns:
+        Optional[str] -- entity string
+    """
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
     # \s*               zero or more whitespaces
@@ -55,7 +70,25 @@ def get_entity(buffer: str):
     return entity
 
 
-def get_ports(buffer: str):
+def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
+    """Parses entity ports out of an input string
+
+    The input is expected to be a string representing vhdl file content. If an
+    entity is defined within this content, the port block is parsed if one is
+    found. If nothing is found that could be parsed, the function returns
+    None. If the ports could be parsed, they are returned with
+    their individual properties.
+    A port consists of the following properties:
+    - name
+    - direction
+    - type
+
+    Arguments:
+        buffer {str} -- input string
+
+    Returns:
+        Optional[List[Tuple[str, str, str]]] -- port names, direction and types
+    """
     # extract the entity string if it exists
     entity = get_entity(buffer)
     if entity is None:
@@ -131,7 +164,25 @@ def get_ports(buffer: str):
     return ports
 
 
-def get_generics(buffer: str):
+def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
+    """Parses entity generics out of an input string
+
+    The input is expected to be a string representing vhdl file content. If an
+    entity is defined within this content, a generic block is parsed if one is
+    found. If nothing is found that could be parsed, the function returns
+    None. If the generic parameters could be parsed, they are returned with
+    their individual properties.
+    A generic parameter consists of the following properties:
+    - name
+    - type
+    - default value (optional)
+
+    Arguments:
+        buffer {str} -- input string
+
+    Returns:
+        List[Tuple[str, str, str]] -- generic names, types and default values
+    """
     # extract the entity string if it exists
     entity = get_entity(buffer)
     if entity is None:
