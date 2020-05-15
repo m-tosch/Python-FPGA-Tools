@@ -57,13 +57,6 @@ def get_entity(buffer):
 
 
 def get_ports(buffer):
-    # TODO
-    # port names can be on the same line but separated by a comma
-    # clk, reset : in std_logic;
-    # instead of
-    # clk : in std_logic;
-    # reset : in std_logic;
-
     # extract the entity string if it exists
     entity = get_entity(buffer)
 
@@ -110,33 +103,25 @@ def get_ports(buffer):
     # \s*               zero or more whitespaces
     # [a-z]{2,}         lowercase letter. two or more times
     # \s+               one or more whitespaces
-    # (                 begin of capture group
+    # (                 begin of capture group----------------------------TYPES
     #     .+?           any character one or more times. lazy evaluation
     # )                 end of capture group
     # \s*               zero or more whitespaces
-    # (?:               begin of non-capture group------------------------TYPES
+    # (?:               begin of non-capture group
+    #     \)            closing parenthesis
+    #     \s*           zero or more whitespaces
     #     ;             semicolon
     #     |             OR
-    #     (?:           begin of non-capture group
-    #         \)        closing parenthesis
-    #         \s*       zero or more whitespaces
-    #         ;         semicolon
-    #         \s*       zero or more whitespaces
-    #         end       "end"
-    #     )             end of non-capture group
+    #     ;             semicolon
     # )                 end of non-capture group
     port_types = re.findall(
-        r":\s*[a-z]{2,}\s+(.+?)\s*(?:;|(?:\)\s*;\s*end))",
-        port_str,
-        flags=re.IGNORECASE,
+        r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
     )
 
-    # collect port name count. separated by ,
+    # account for  multiple port names in the same line, separated by a comma
     count = [pn.count(",") + 1 for pn in port_names]
-
     # correct port names list
     port_names_ = [pn_ for pn in port_names for pn_ in pn.split(",")]
-
     # correct port dirs, types list
     port_dirs_, port_types_ = [], []
     for c, pd, pt in zip(count, port_dirs, port_types):
