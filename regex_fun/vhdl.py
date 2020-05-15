@@ -131,34 +131,24 @@ def get_ports(buffer):
         flags=re.IGNORECASE,
     )
 
-    # collect list of indices with , and their count
-    ll = [(i, n.count(",") + 1) for i, n in enumerate(port_names) if "," in n]
-    indices = list(list(zip(*ll))[0])
-    count = list(list(zip(*ll))[1])
+    # collect port name count. separated by ,
+    count = [pn.count(",") + 1 for pn in port_names]
 
-    # correct port names list (expand)
-    for i, pn in enumerate(port_names):
-        if "," in pn:
-            variables = pn.split(",")
-            port_names[i] = variables[0]
-            for j, v in enumerate(variables[1:], 1):
-                port_names.insert(i + j, v)
+    # correct port names list
+    port_names_ = [pn_ for pn in port_names for pn_ in pn.split(",")]
 
-    # TODO currently broken
-    # correct port dirs and types list (expand)
-    # c = 0
-    # for i, (pd, pt) in enumerate(zip(port_dirs, port_types)):
-    #     if i in indices:
-    #         ii = indices.index(i)
-    #         # c += count[ii] - 1
-    #         for j in range(1, count[ii]):
-    #             port_dirs.insert(i + c, port_dirs[c] + "X")
-    #             port_types.insert(i + c, port_types[c])
-    #             c += 1
+    # correct port dirs, types list
+    port_dirs_, port_types_ = [], []
+    for c, pd, pt in zip(count, port_dirs, port_types):
+        port_dirs_.extend([pd] * c)
+        port_types_.extend([pt] * c)
 
     # names, directions and ports as a list of tuples
-    # ports = [(x, y, z) for x, y, z in zip(port_names, port_dirs, port_types)]
-    return None
+    ports = [
+        (pn, pd, pt)
+        for pn, pd, pt in zip(port_names_, port_dirs_, port_types_)
+    ]
+    return ports
 
 
 def get_generics(buffer):
