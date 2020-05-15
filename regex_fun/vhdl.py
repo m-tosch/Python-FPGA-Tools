@@ -7,11 +7,20 @@ from typing import Dict, Tuple, List, Optional
 # install coverage package https://pypi.org/project/coverage/
 
 
-def _get_raw_vhdl(buffer: str):
+def _get_raw_vhdl(buffer: str) -> str:
+    """Removes VHDL comments and whitespaces
+
+    The input is expected to be a string representing vhdl file content.
+    All valid VHDL comments are removed. All whitespaces/tabs/line breaks are
+    replaced by a single whitespace.
+
+    Arguments:
+        buffer {str} -- input string
+
+    Returns:
+        str -- VHDL file string
     """
-    Removes all VHDL comments and substitutes all whitespaces/tabs/line breaks
-    with a single whitespace
-    """
+
     # remove all VHDL comments
     # (                 begin of capture group
     #     \s*           zero or more whitespaces
