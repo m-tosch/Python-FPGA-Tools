@@ -6,7 +6,7 @@ import re
 # install coverage package https://pypi.org/project/coverage/
 
 
-def _get_raw_vhdl(buffer):
+def _get_raw_vhdl(buffer: str):
     """
     Removes all VHDL comments and substitutes all whitespaces/tabs/line breaks
     with a single whitespace
@@ -26,7 +26,7 @@ def _get_raw_vhdl(buffer):
     return buffer
 
 
-def get_entity(buffer):
+def get_entity(buffer: str):
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
     # \s*               zero or more whitespaces
@@ -49,14 +49,17 @@ def get_entity(buffer):
         _get_raw_vhdl(buffer),
         flags=re.IGNORECASE,
     )
+    if m is None:
+        return None
     entity = m.group(1)
     return entity
 
 
-def get_ports(buffer):
+def get_ports(buffer: str):
     # extract the entity string if it exists
     entity = get_entity(buffer)
-
+    if entity is None:
+        return None
     # (                 begin of capture group---------------------ENTITY PORTS
     #     port          "port"
     #     \s*           zero or more whitespaces
@@ -69,9 +72,9 @@ def get_ports(buffer):
     # \s*               zero or more whitespaces
     # end               "end"
     m = re.search(r"(port\s*\(.*\)\s*;)\s*end", entity, flags=re.IGNORECASE)
+    if m is None:
+        return None
     port_str = m.group(1)
-    print(port_str)
-
     # port variable names
     # (                 begin of capture group----------------------------NAMES
     #     [a-z]         lowercase letter (identifiers must begin with that)
@@ -83,7 +86,6 @@ def get_ports(buffer):
     port_names = re.findall(
         r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
     )
-
     # port directions (in, out, inout)
     # :                 double colon
     # \s*               zero or more whitespaces
@@ -94,7 +96,6 @@ def get_ports(buffer):
     port_dirs = re.findall(
         r":\s*([a-z]{2,})\s+", port_str, flags=re.IGNORECASE
     )
-
     # port types (e.g. std_logic)
     # :                 double colon
     # \s*               zero or more whitespaces
@@ -114,7 +115,6 @@ def get_ports(buffer):
     port_types = re.findall(
         r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
     )
-
     # account for  multiple port names in the same line, separated by a comma
     count = [pn.count(",") + 1 for pn in port_names]
     # correct port names list. every port variable is an entry in the list
@@ -124,7 +124,6 @@ def get_ports(buffer):
     for c, pd, pt in zip(count, port_dirs, port_types):
         port_dirs_.extend([pd] * c)
         port_types_.extend([pt] * c)
-
     # port names, directions and types as a list of tuples
     ports = [
         (pn, pd, pt)
@@ -133,10 +132,11 @@ def get_ports(buffer):
     return ports
 
 
-def get_generics(buffer):
+def get_generics(buffer: str):
     # extract the entity string if it exists
     entity = get_entity(buffer)
-
+    if entity is None:
+        return None
     # (                 begin of capture group
     #     generic       "generic"
     #     \s*           zero or more whitespaces
@@ -148,16 +148,17 @@ def get_generics(buffer):
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # port              "port"
+    # \s*               zero or more whitespaces
+    # \(                opening parenthesis
     m = re.search(
-        r"(generic\s*\(.*\)\s*;)\s*port", entity, flags=re.IGNORECASE
+        r"(generic\s*\(.*\)\s*;)\s*port\s*\(", entity, flags=re.IGNORECASE
     )
     if m is None:
-        return []
+        return None
     generic_str = m.group(1)
-
     # generic variable names
     # (                 begin of capture group----------------------------NAMES
-    #     [a-z]         lowercase letter (identifiers must begin with that)
+    #     [a-z]         lowercase letter (identifiers must begin with a letter)
     #     [a-z_0-9]*    lowercase letter/underscore/digit. zero or more times
     # )                 end of capture group
     # \s*               zero or more whitespaces
@@ -166,48 +167,44 @@ def get_generics(buffer):
     generic_names = re.findall(
         r"([a-z][a-z_0-9]*)\s*:[^=]", generic_str, flags=re.IGNORECASE
     )
-
-    # generic variable types
+    # capture generic "type to end" of generic description
+    # used to identify the type and default value, but the default value is
+    # optional
     # :                 double colon
     # \s*               zero or more whitespaces
     # (                 begin of capture group----------------------------TYPES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
     # \s*               zero or more whitespaces
-    # :=                double colon and equal sign
-    generic_types = re.findall(
-        r":\s*(.*?)\s*:=", generic_str, flags=re.IGNORECASE
-    )
-
-    # generic variable default values
-    # :=                double colon and equal sign
-    # \s*               zero or more whitespaces
-    # (                 begin of capture group-------------------DEFAULT VALUES
-    #     .*?           any character zero or more times. lazy evaluation
-    # )                 end of capture group
-    # \s*               zero or more whitespaces
     # (?:               begin of non-capture group
     #     ;             semicolon
     #     |             OR
-    #     (?:           begin of non-capture group
-    #         \)        closing parenthesis
-    #         \s*       zero or more whitespaces
-    #         ;         semicolon
-    #     )             end of non-capture group
+    #     \)            closing parenthesis
+    #     \s*           zero or more whitespaces
+    #     ;             semicolon
     # )                 end of non-capture group
-    generic_def_vals = re.findall(
-        r":=\s*(.*?)\s*(?:;|(?:\)\s*;))", generic_str, flags=re.IGNORECASE
+    generic_type_to_end = re.findall(
+        r":\s*(.*?)\s*(?:;|\)\s*;)", generic_str, flags=re.IGNORECASE
     )
+    # generic variable types (e.g. integer)
+    generic_types = [
+        gtte.split(":=")[0].strip() for gtte in generic_type_to_end
+    ]
+    # generic default values, if one is specified with ":=" (e.g. 42)
+    generic_def_vals = []
+    for gt in generic_type_to_end:
+        def_val = gt.split(":=")[1].strip() if ":=" in gt else None
+        generic_def_vals.append(def_val)
 
-    # names, types and default values as a list of tuples
+    # generic names, types and default values as a list of tuples
     generics = [
-        (x, y, z)
-        for x, y, z in zip(generic_names, generic_types, generic_def_vals)
+        (gn, gt, gd)
+        for gn, gt, gd in zip(generic_names, generic_types, generic_def_vals)
     ]
     return generics
 
 
-def get_constants_from_pkg(buffer):
+def get_constants_from_pkg(buffer: str):
     """
     Gets all constants names from def file specified by function argument
     :param buffer:   str
