@@ -1,10 +1,10 @@
 # regex fun
 
-Fun regex tools
+regex tools :)
 
 ## Usage
 
-TODO
+
 
 ## run unit tests
 

@@ -9,7 +9,7 @@ setuptools.setup(
     author="Maximilian Tosch",
     author_email="empty@empty.com",
     license="MIT",
-    description="Fun regex tools",
+    description="regex tools :)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/m-tosch/regex_fun",
