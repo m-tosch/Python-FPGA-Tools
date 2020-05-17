@@ -59,16 +59,28 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(generics, expected)
         self.assertIsNotNone(generics)
 
-    def test_empty_file(self):
+    def test_empty_entity(self):
         # arrange
         nothing = ""
         # action
         entity = vhdl.get_entity(nothing)
-        ports = vhdl.get_entity(nothing)
-        generics = vhdl.get_entity(nothing)
         # assert
         self.assertIsNone(entity)
+
+    def test_empty_ports(self):
+        # arrange
+        nothing = ""
+        # action
+        ports = vhdl.get_ports(nothing)
+        # assert
         self.assertIsNone(ports)
+
+    def test_empty_generics(self):
+        # arrange
+        nothing = ""
+        # action
+        generics = vhdl.get_generics(nothing)
+        # assert
         self.assertIsNone(generics)
 
     def test_constants(self):
