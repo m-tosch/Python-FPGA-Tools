@@ -1,7 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-
 entity module is
 generic(N : integer := 42;
         M : std_logic);
@@ -11,11 +10,13 @@ port(  clk,clk2,clk10   : in std_logic;
 end module;
 
 architecture behavioral of module is
--- some signals
+-- some signals, types ...etc
 begin
 
-process(clk_div, reset)
+process(clk, reset)
 -- some vhdl code
 end process;
+
+-- more processes
 
 end behavioral;
