@@ -4,7 +4,6 @@ regex tools :)
 
 ## Usage
 
-TODO
 
 ## run unit tests
 
