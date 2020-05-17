@@ -99,7 +99,7 @@ class TestVHDL(unittest.TestCase):
             ("Natalia", "integer range 0 to 32", "32"),
         ]
         # assert
-        self.assertNotEqual(constants, expected)
+        self.assertEqual(constants, expected)
 
 
 if __name__ == "__main__":
