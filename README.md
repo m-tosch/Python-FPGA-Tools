@@ -4,8 +4,6 @@ regex tools :)
 
 ## Usage
 
-TODO
-
 ## run unit tests
 
 test_vhdl.py
