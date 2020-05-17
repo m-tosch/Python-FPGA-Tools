@@ -5,6 +5,7 @@ from typing import Tuple, List, Optional
 # - maybe more detailed "classes" e.g. Entity(), Package() with parser methods
 # - coverage package https://pypi.org/project/coverage/ ?
 # - get_process, get_signals ...
+# - DRY: get_generics() and get_constants() do almost the same....
 
 
 def _get_raw_vhdl(buffer: str) -> str:
@@ -265,13 +266,24 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     return generics
 
 
-def get_constants(buffer: str):
-    """
-    Gets all constants names from def file specified by function argument
-    :param buffer:   str
-    :type pkg_file_path:    str
-    :return:                a tuple of str lists [name, type, default value] for every constant
-    :rtype:                 TODO
+def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
+    """Parses constants out of an input string
+
+    The input is expected to be a string representing vhdl file content.
+    Specifically, one where constants are defined. If constants are defined in
+    the input, they are parsed. If nothing is found that could be parsed, the
+    function returns None. If the generic parameters could be parsed, they are
+    returned with their individual properties.
+    A constant consists of the following properties:
+    - name
+    - type
+    - default value
+
+    Arguments:
+        buffer {str} -- input string
+
+    Returns:
+        List[Tuple[str, str, str]] -- constants names, types and default values
     """
     buffer = _get_raw_vhdl(buffer)
     # constant          "constant"
