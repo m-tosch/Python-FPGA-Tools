@@ -299,32 +299,6 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     )
     if constant_names == []:
         return None
-
-    #####################################################################
-    # TODO evaluate if this is needed
-    # # type              "type"
-    # # \s+               one or more whitespaces
-    # # [a-z]             identifiers must begin with a letter
-    # # [a-z_0-9]*        any letter, underscore or digit. zero or more times
-    # # \s+               one or more whitespaces
-    # # is                "is"
-    # # \s*               zero or more whitespaces
-    # # \(                opening parenthesis (escaped)
-    # # \s*               zero or more whitespaces
-    # # (.[^)]+)          capture group. any char one or more times that's not)
-    # # \s*               zero or more whitespaces
-    # # \)                closing parenthesis (escaped)
-    # # \s*               zero or more whitespaces
-    # # ;                 semicolon
-    # state_types = re.findall(
-    #     r"type\s+([a-z][a-z_0-9]*)\s+is\s*\(\s*(.[^)]+)\s*\)\s*;",
-    #     buffer,
-    #     flags=re.IGNORECASE,
-    # )
-    # # [('state_type', 'idle, calculation, finishing ')]
-    # #  ^tuple access first element as state_types[0][0]
-    #####################################################################
-
     # :                 double colon
     # \s*               zero or more whitespaces
     # (                 begin of capture group
