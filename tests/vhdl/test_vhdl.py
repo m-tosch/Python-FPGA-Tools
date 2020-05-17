@@ -62,8 +62,12 @@ class TestVHDL(unittest.TestCase):
         buffer = ""
         # action
         entity = vhdl.get_entity(buffer)
+        ports = vhdl.get_entity(buffer)
+        generics = vhdl.get_entity(buffer)
         # assert
         self.assertIsNone(entity)
+        self.assertIsNone(ports)
+        self.assertIsNone(generics)
 
 
 if __name__ == "__main__":
