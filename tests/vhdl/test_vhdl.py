@@ -101,6 +101,14 @@ class TestVHDL(unittest.TestCase):
         # assert
         self.assertEqual(constants, expected)
 
+    def test_empty_constants(self):
+        # arrange
+        nothing = ""
+        # action
+        constants = vhdl.get_constants_from_pkg(nothing)
+        # assert
+        self.assertIsNone(constants)
+
 
 if __name__ == "__main__":
     unittest.main()
