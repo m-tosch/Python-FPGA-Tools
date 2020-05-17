@@ -11,14 +11,16 @@ def _get_raw_vhdl(buffer: str) -> str:
     """Removes VHDL comments and whitespaces
 
     The input is expected to be a string representing vhdl file content.
-    All valid VHDL comments are removed. All whitespaces/tabs/line breaks are
-    replaced by a single whitespace.
+    - All valid VHDL comments are removed
+    - All whitespaces/tabs/line breaks are replaced by a single whitespace
+    If it could be changed, the modified input string is returned. If the
+    input string could not be changed, it is returned.
 
     Arguments:
         buffer {str} -- input string
 
     Returns:
-        str -- VHDL file string
+        str -- modified input string
     """
     # remove all VHDL comments
     # (                 begin of capture group

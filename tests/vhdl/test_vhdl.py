@@ -29,6 +29,7 @@ class TestVHDL(unittest.TestCase):
         expected = re.sub(r"\s+", " ", expected).strip()
         # assert
         self.assertEqual(entity, expected)
+        self.assertIsNotNone(entity)
 
     def test_module_ports(self):
         # action
@@ -43,6 +44,7 @@ class TestVHDL(unittest.TestCase):
         ]
         # assert
         self.assertEqual(ports, expected)
+        self.assertIsNotNone(ports)
 
     def test_module_generics(self):
         # action
@@ -53,6 +55,15 @@ class TestVHDL(unittest.TestCase):
         ]
         # assert
         self.assertEqual(generics, expected)
+        self.assertIsNotNone(generics)
+
+    def test_empty_file(self):
+        # arrange
+        buffer = ""
+        # action
+        entity = vhdl.get_entity(buffer)
+        # assert
+        self.assertIsNone(entity)
 
 
 if __name__ == "__main__":
