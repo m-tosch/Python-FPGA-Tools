@@ -67,3 +67,4 @@ target/
 # vhdl files
 *.vhd
 !module.vhd
+!constants.vhd

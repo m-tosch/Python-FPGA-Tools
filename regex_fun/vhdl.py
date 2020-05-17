@@ -274,7 +274,6 @@ def get_constants_from_pkg(buffer: str):
     :rtype:                 TODO
     """
     buffer = _get_raw_vhdl(buffer)
-
     # constant          "constant"
     # \s+               one or more whitespaces
     # (                 begin of capture group
@@ -283,10 +282,12 @@ def get_constants_from_pkg(buffer: str):
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # :                 double colon
-    names = re.findall(
+    constant_names = re.findall(
         r"constant\s+([a-z][a-z_0-9]*)\s*:", buffer, flags=re.IGNORECASE,
     )
-
+    if constant_names == []:
+        return None
+    #####################################################################
     # TODO evaluate if this is needed
     # # type              "type"
     # # \s+               one or more whitespaces
@@ -309,7 +310,7 @@ def get_constants_from_pkg(buffer: str):
     # )
     # # [('state_type', 'idle, calculation, finishing ')]
     # #  ^tuple access first element as state_types[0][0]
-
+    #####################################################################
     # :                 double colon
     # \s*               zero or more whitespaces
     # (                 begin of capture group
@@ -317,8 +318,7 @@ def get_constants_from_pkg(buffer: str):
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # :=                double colon and equals sign
-    types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
-
+    constant_types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
     # :=                double colon and equals sign
     # \s*               zero or more whitespaces
     # (                 begin of capture group
@@ -326,5 +326,14 @@ def get_constants_from_pkg(buffer: str):
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # ;                 semicolon
-    def_vals = re.findall(r":=\s*(.*?)\s*;", buffer, flags=re.IGNORECASE)
-    return (names, types, def_vals)
+    constant_def_vals = re.findall(
+        r":=\s*(.*?)\s*;", buffer, flags=re.IGNORECASE
+    )
+    # constant names, types and default values as a list of tuples
+    constants = [
+        (cn, ct, cd)
+        for cn, ct, cd in zip(
+            constant_names, constant_types, constant_def_vals
+        )
+    ]
+    return constants

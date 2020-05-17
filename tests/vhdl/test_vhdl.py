@@ -10,14 +10,16 @@ from regex_fun import vhdl
 class TestVHDL(unittest.TestCase):
     def setUp(self):
         with open("tests/vhdl/module.vhd", "r") as f:
-            self.buffer = f.read()
+            self.module = f.read()
+        with open("tests/vhdl/constants.vhd", "r") as f:
+            self.constants = f.read()
 
     # def tearDown(self):
     #     pass
 
     def test_module_entity(self):
         # action
-        entity = vhdl.get_entity(self.buffer)
+        entity = vhdl.get_entity(self.module)
         expected = """entity module is
                       generic(N : integer := 42;
                               M : std_logic);
@@ -33,7 +35,7 @@ class TestVHDL(unittest.TestCase):
 
     def test_module_ports(self):
         # action
-        ports = vhdl.get_ports(self.buffer)
+        ports = vhdl.get_ports(self.module)
         expected = [
             ("clk", "in", "std_logic"),
             ("clk2", "in", "std_logic"),
@@ -48,7 +50,7 @@ class TestVHDL(unittest.TestCase):
 
     def test_module_generics(self):
         # action
-        generics = vhdl.get_generics(self.buffer)
+        generics = vhdl.get_generics(self.module)
         expected = [
             ("N", "integer", "42"),
             ("M", "std_logic", None),
@@ -59,15 +61,33 @@ class TestVHDL(unittest.TestCase):
 
     def test_empty_file(self):
         # arrange
-        buffer = ""
+        nothing = ""
         # action
-        entity = vhdl.get_entity(buffer)
-        ports = vhdl.get_entity(buffer)
-        generics = vhdl.get_entity(buffer)
+        entity = vhdl.get_entity(nothing)
+        ports = vhdl.get_entity(nothing)
+        generics = vhdl.get_entity(nothing)
         # assert
         self.assertIsNone(entity)
         self.assertIsNone(ports)
         self.assertIsNone(generics)
+
+    def test_constants(self):
+        # action
+        constants = vhdl.get_constants_from_pkg(self.constants)
+        expected = [
+            ("Artorius", "integer range 0 to 2000", "1000"),
+            ("Benedictus", "integer range 0 to 1", "0"),
+            ("Leonardus_MAX", "integer range 4 to 4", "4"),
+            ("Constans", "integer range 1 to Leonardus_MAX", "1"),
+            ("Rogerius", "integer range 0 to 10000", "7999"),
+            ("Elias", "std_logic_vector(31 downto 0)", 'x"00000001"'),
+            ("Dorothea", "integer range 0 to 255", "42"),
+            ("Dominicus", "integer range 0 to 2**17", "12500"),
+            ("Justinus", "std_logic_vector(31 downto 0)", 'x"00000000"'),
+            ("Natalia", "integer range 0 to 32", "32"),
+        ]
+        # assert
+        self.assertNotEqual(constants, expected)
 
 
 if __name__ == "__main__":
