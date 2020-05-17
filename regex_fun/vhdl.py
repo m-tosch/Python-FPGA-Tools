@@ -265,7 +265,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     return generics
 
 
-def get_constants_from_pkg(buffer: str):
+def get_constants(buffer: str):
     """
     Gets all constants names from def file specified by function argument
     :param buffer:   str
@@ -287,6 +287,7 @@ def get_constants_from_pkg(buffer: str):
     )
     if constant_names == []:
         return None
+
     #####################################################################
     # TODO evaluate if this is needed
     # # type              "type"
@@ -311,6 +312,7 @@ def get_constants_from_pkg(buffer: str):
     # # [('state_type', 'idle, calculation, finishing ')]
     # #  ^tuple access first element as state_types[0][0]
     #####################################################################
+
     # :                 double colon
     # \s*               zero or more whitespaces
     # (                 begin of capture group

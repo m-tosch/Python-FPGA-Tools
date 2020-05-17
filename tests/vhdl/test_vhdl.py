@@ -85,7 +85,7 @@ class TestVHDL(unittest.TestCase):
 
     def test_constants(self):
         # action
-        constants = vhdl.get_constants_from_pkg(self.constants)
+        constants = vhdl.get_constants(self.constants)
         expected = [
             ("Artorius", "integer range 0 to 2000", "1000"),
             ("Benedictus", "integer range 0 to 1", "0"),
@@ -105,7 +105,7 @@ class TestVHDL(unittest.TestCase):
         # arrange
         nothing = ""
         # action
-        constants = vhdl.get_constants_from_pkg(nothing)
+        constants = vhdl.get_constants(nothing)
         # assert
         self.assertIsNone(constants)
 
