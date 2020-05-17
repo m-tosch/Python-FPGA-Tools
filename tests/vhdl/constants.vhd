@@ -17,4 +17,7 @@ package constants is
 
     constant Natalia : integer range 0 to 32 := 32;
 
+    type state_type is (opt1, opt2, opt3);
+    constant state_selected : state_type := opt1;
+
 end package;

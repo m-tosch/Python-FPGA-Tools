@@ -97,6 +97,7 @@ class TestVHDL(unittest.TestCase):
             ("Dominicus", "integer range 0 to 2**17", "12500"),
             ("Justinus", "std_logic_vector(31 downto 0)", 'x"00000000"'),
             ("Natalia", "integer range 0 to 32", "32"),
+            ("state_selected", "state_type", "opt1"),
         ]
         # assert
         self.assertEqual(constants, expected)
