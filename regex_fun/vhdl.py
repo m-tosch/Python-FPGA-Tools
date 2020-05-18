@@ -1,13 +1,6 @@
 import re
 from typing import Tuple, List, Optional
 
-# TODO
-# - maybe more detailed "classes" e.g. Entity(), Package() with parser methods
-# - coverage package https://pypi.org/project/coverage/ ?
-# - get_process, get_signals ...
-# - DRY: get_generics() and get_constants() do almost the same....
-
-
 def _get_raw_vhdl(buffer: str) -> str:
     """Removes VHDL comments and whitespaces
 
