@@ -130,7 +130,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     _port_names = re.findall(
         r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
     )
-    # port directions (in, out, inout)
+    # port directions (in, out, inout, buffer)
     # :                 double colon
     # \s*               zero or more whitespaces
     # (                 begin of capture group------------------------DIRECTION
