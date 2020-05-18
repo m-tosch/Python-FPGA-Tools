@@ -159,6 +159,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     _port_types = re.findall(
         r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
     )
+
     # account for  multiple port names in the same line, separated by a comma
     count = [_pn.count(",") + 1 for _pn in _port_names]
     # correct port names list. every port variable is an entry in the list
@@ -168,6 +169,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     for c, _pd, _pt in zip(count, _port_dirs, _port_types):
         port_dirs.extend([_pd] * c)
         port_types.extend([_pt] * c)
+
     # port names, directions and types as a list of tuples
     ports = [
         (pn, pd, pt) for pn, pd, pt in zip(port_names, port_dirs, port_types)
@@ -225,8 +227,8 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # \s*               zero or more whitespaces
     # :                 double colon
     # [^=]              any character that is not an equal sign
-    generic_names = re.findall(
-        r"([a-z][a-z_0-9]*)\s*:[^=]", generic_str, flags=re.IGNORECASE
+    _generic_names = re.findall(
+        r"([a-z][a-z_0-9,]*)\s*:[^=]", generic_str, flags=re.IGNORECASE
     )
     # capture generic "type to end" of generic description
     # used to identify the type and default value, but the default value is
@@ -244,19 +246,29 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of non-capture group
-    _generic_type_to_end = re.findall(
+    __generic_type_to_end = re.findall(
         r":\s*(.*?)\s*(?:;|\)\s*;)", generic_str, flags=re.IGNORECASE
     )
     # generic variable types (e.g. integer)
-    generic_types = [
-        gtte.split(":=")[0].strip() for gtte in _generic_type_to_end
+    _generic_types = [
+        gtte.split(":=")[0].strip() for gtte in __generic_type_to_end
     ]
     # generic default values (e.g. 42)
     # only if one is specified with ":=", None otherwise
-    generic_def_vals = []
-    for gt in _generic_type_to_end:
+    _generic_def_vals = []
+    for gt in __generic_type_to_end:
         def_val = gt.split(":=")[1].strip() if ":=" in gt else None
-        generic_def_vals.append(def_val)
+        _generic_def_vals.append(def_val)
+
+    # account for  multiple port names in the same line, separated by a comma
+    count = [_gn.count(",") + 1 for _gn in _generic_names]
+    # correct generic names list. every generic variable is an entry in a list
+    generic_names = [gn for _gn in _generic_names for gn in _gn.split(",")]
+    # correct generic types and default values. expand lists depending on count
+    generic_types, generic_def_vals = [], []
+    for c, _gt, _gd in zip(count, _generic_types, _generic_def_vals):
+        generic_types.extend([_gt] * c)
+        generic_def_vals.extend([_gd] * c)
 
     # generic names, types and default values as a list of tuples
     generics = [

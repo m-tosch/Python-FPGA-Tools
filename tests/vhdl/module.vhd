@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity module is
 generic(N : integer := 42;
-        M : std_logic);
+        M,O : std_logic);
 port(  clk,clk2,clk10   : in std_logic;
        reset : inout std_logic;
        p1,p2   : out std_logic_vector(N-1 downto 0));
