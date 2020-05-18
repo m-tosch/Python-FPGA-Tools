@@ -1,6 +1,7 @@
 import re
 from typing import Tuple, List, Optional
 
+
 def _get_raw_vhdl(buffer: str) -> str:
     """Removes VHDL comments and whitespaces
 
