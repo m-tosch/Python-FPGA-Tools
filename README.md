@@ -1,5 +1,7 @@
 # regex fun
 
+![](https://github.com/m-tosch/regex_fun/workflows/build/badge.svg)
+
 regex tools :)
 
 ## Usage
