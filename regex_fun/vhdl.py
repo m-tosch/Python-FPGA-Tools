@@ -83,10 +83,12 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     found. If nothing is found that could be parsed, the function returns
     None. If the ports could be parsed, they are returned with
     their individual properties.
+
     A port consists of the following properties:
-    - name
-    - direction
-    - type
+
+    - name\n
+    - direction\n
+    - type\n
 
     Arguments:
         buffer {str} -- input string
@@ -179,10 +181,12 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     found. If nothing is found that could be parsed, the function returns
     None. If the generic parameters could be parsed, they are returned with
     their individual properties.
+
     A generic parameter consists of the following properties:
-    - name
-    - type
-    - default value (optional)
+
+    - name\n
+    - type\n
+    - default value (optional)\n
 
     Arguments:
         buffer {str} -- input string
