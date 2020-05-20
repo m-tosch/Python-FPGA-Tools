@@ -56,8 +56,6 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-# docs/build/doctrees/
-# !docs/build/html/**
 docs/doctrees/
 # make.bat
 # Makefile

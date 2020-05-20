@@ -33,13 +33,11 @@ release = "0.0.1"
 # ones.
 #
 # sphinxcontrib.napoleon - renders the docstrings correctly
-# m2r - allows to include .md markdown files in the html output
 # sphinx.ext.viewcode - includes a source code links in the doc to view it
 # sphinx.ext.githubpages - puts an empty .nojekyll file to host a github page
 
 extensions = [
     "sphinxcontrib.napoleon",
-    "m2r",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
 ]
