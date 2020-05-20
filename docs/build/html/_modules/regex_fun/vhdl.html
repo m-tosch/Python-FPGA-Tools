@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>regex_fun.vhdl &#8212; Regex Fun 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Regex Fun 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regex_fun.vhdl</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+
+<span class="k">def</span> <span class="nf">_get_raw_vhdl</span><span class="p">(</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Removes VHDL comments and whitespaces</span>
+
+<span class="sd">    The input is expected to be a string representing vhdl file content.</span>
+<span class="sd">    - All valid VHDL comments are removed</span>
+<span class="sd">    - All whitespaces/tabs/line breaks are replaced by a single whitespace</span>
+<span class="sd">    If it could be changed, the modified input string is returned. If the</span>
+<span class="sd">    input string could not be changed, it is returned.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        buffer {str} -- input string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str -- modified input string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># remove all VHDL comments</span>
+    <span class="c1"># (                 begin of capture group</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     --            two dashes</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># .*                any character zero or more times</span>
+    <span class="c1"># \n?               line break. lazy evaluation</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\s*--).*\n?&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+    <span class="c1"># substitute all tabs, newlines, whitespaces with a single whitespace</span>
+    <span class="c1"># the .strip() removes any leading and trailing whitespaces</span>
+    <span class="c1"># \s+               one ore more whitespaces</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">buffer</span>
+
+
+<div class="viewcode-block" id="get_entity"><a class="viewcode-back" href="../../index.html#regex_fun.vhdl.get_entity">[docs]</a><span class="k">def</span> <span class="nf">get_entity</span><span class="p">(</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Parses the entity out of an input string</span>
+
+<span class="sd">    The input is expected to be a string representing vhdl file content. If an</span>
+<span class="sd">    entity is defined within this content, an entity block is parsed if one is</span>
+<span class="sd">    found. If nothing is found that could be parsed, the function returns</span>
+<span class="sd">    None. If the entity could be parsed, it is returned as a string beginning</span>
+<span class="sd">    with &quot;entity&quot; and ending on &quot;end &lt;name&gt;;&quot; or &quot;end entity;&quot;</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        buffer {str} -- input string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[str] -- entity string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># [^- ]             anything that is NOT a dash or whitespace</span>
+    <span class="c1"># +                 one or more times</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group---------------------------ENTITY</span>
+    <span class="c1">#     entity        &quot;entity&quot;</span>
+    <span class="c1">#     \s+           one or more whitespaces</span>
+    <span class="c1">#     .+            any character one or more times</span>
+    <span class="c1">#     \s+           one or more whitespaces</span>
+    <span class="c1">#     is            &quot;is&quot;</span>
+    <span class="c1">#     .*            any character zero or more times (-&gt;generics and ports)</span>
+    <span class="c1">#     end           &quot;end&quot;</span>
+    <span class="c1">#     \s+           one or more whitespaces</span>
+    <span class="c1">#     .*            any character zero or more times</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># architecture      &quot;architecture&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture&quot;</span><span class="p">,</span>
+        <span class="n">_get_raw_vhdl</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span>
+        <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entity</span></div>
+
+
+<div class="viewcode-block" id="get_ports"><a class="viewcode-back" href="../../index.html#regex_fun.vhdl.get_ports">[docs]</a><span class="k">def</span> <span class="nf">get_ports</span><span class="p">(</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;Parses entity ports out of an input string</span>
+
+<span class="sd">    The input is expected to be a string representing vhdl file content. If an</span>
+<span class="sd">    entity is defined within this content, the port block is parsed if one is</span>
+<span class="sd">    found. If nothing is found that could be parsed, the function returns</span>
+<span class="sd">    None. If the ports could be parsed, they are returned with</span>
+<span class="sd">    their individual properties.</span>
+
+<span class="sd">    A port consists of the following properties:</span>
+
+<span class="sd">    - name\n</span>
+<span class="sd">    - direction\n</span>
+<span class="sd">    - type\n</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        buffer {str} -- input string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[List[Tuple[str, str, str]]] -- port names, direction and types</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># extract the entity string if it exists</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">get_entity</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># (                 begin of capture group---------------------ENTITY PORTS</span>
+    <span class="c1">#     port          &quot;port&quot;</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     \(            opening parenthesis</span>
+    <span class="c1">#     .*            any character zero or more times</span>
+    <span class="c1">#     \)            closing parenthesis</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># end               &quot;end&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(port\s*\(.*\)\s*;)\s*end&quot;</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">port_str</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># port variable names</span>
+    <span class="c1"># (                 begin of capture group----------------------------NAMES</span>
+    <span class="c1">#     [a-z]         lowercase letter (identifiers must begin with that)</span>
+    <span class="c1">#     [a-z_0-9,]    lowercase letter/underscore/digit or comma</span>
+    <span class="c1">#     *             zero or more times</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="n">_port_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;([a-z][a-z_0-9,]*)\s*:&quot;</span><span class="p">,</span> <span class="n">port_str</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="c1"># port directions (in, out, inout, buffer)</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group------------------------DIRECTION</span>
+    <span class="c1">#     [a-z]{2,}     lowercase letter. two or more times (shortest is &quot;in&quot;)</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s+               one or more whitespaces</span>
+    <span class="n">_port_dirs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;:\s*([a-z]{2,})\s+&quot;</span><span class="p">,</span> <span class="n">port_str</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="c1"># port types (e.g. std_logic)</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># [a-z]{2,}         lowercase letter. two or more times</span>
+    <span class="c1"># \s+               one or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group----------------------------TYPES</span>
+    <span class="c1">#     .+?           any character one or more times. lazy evaluation</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (?:               begin of non-capture group</span>
+    <span class="c1">#     \)            closing parenthesis</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1">#     |             OR</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1"># )                 end of non-capture group</span>
+    <span class="n">_port_types</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;:\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)&quot;</span><span class="p">,</span> <span class="n">port_str</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># account for  multiple port names in the same line, separated by a comma</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="n">_pn</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">_pn</span> <span class="ow">in</span> <span class="n">_port_names</span><span class="p">]</span>
+    <span class="c1"># correct port names list. every port variable is an entry in the list</span>
+    <span class="n">port_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">pn</span> <span class="k">for</span> <span class="n">_pn</span> <span class="ow">in</span> <span class="n">_port_names</span> <span class="k">for</span> <span class="n">pn</span> <span class="ow">in</span> <span class="n">_pn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+    <span class="c1"># correct port dirs, types list. expand lists depending on no. of ports</span>
+    <span class="n">port_dirs</span><span class="p">,</span> <span class="n">port_types</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">_pd</span><span class="p">,</span> <span class="n">_pt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">_port_dirs</span><span class="p">,</span> <span class="n">_port_types</span><span class="p">):</span>
+        <span class="n">port_dirs</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">_pd</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">port_types</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">_pt</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="c1"># port names, directions and types as a list of tuples</span>
+    <span class="n">ports</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">pn</span><span class="p">,</span> <span class="n">pd</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span> <span class="k">for</span> <span class="n">pn</span><span class="p">,</span> <span class="n">pd</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">port_names</span><span class="p">,</span> <span class="n">port_dirs</span><span class="p">,</span> <span class="n">port_types</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">ports</span></div>
+
+
+<div class="viewcode-block" id="get_generics"><a class="viewcode-back" href="../../index.html#regex_fun.vhdl.get_generics">[docs]</a><span class="k">def</span> <span class="nf">get_generics</span><span class="p">(</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;Parses entity generics out of an input string</span>
+
+<span class="sd">    The input is expected to be a string representing vhdl file content. If an</span>
+<span class="sd">    entity is defined within this content, a generic block is parsed if one is</span>
+<span class="sd">    found. If nothing is found that could be parsed, the function returns</span>
+<span class="sd">    None. If the generic parameters could be parsed, they are returned with</span>
+<span class="sd">    their individual properties.</span>
+
+<span class="sd">    A generic parameter consists of the following properties:</span>
+
+<span class="sd">    - name\n</span>
+<span class="sd">    - type\n</span>
+<span class="sd">    - default value (optional)\n</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        buffer {str} -- input string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple[str, str, str]] -- generic names, types and default values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># extract the entity string if it exists</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">get_entity</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># (                 begin of capture group</span>
+    <span class="c1">#     generic       &quot;generic&quot;</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     \(            opening parenthesis</span>
+    <span class="c1">#     .*            any character zero or more times</span>
+    <span class="c1">#     \)            closing parenthesis</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># port              &quot;port&quot;</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># \(                opening parenthesis</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;(generic\s*\(.*\)\s*;)\s*port\s*\(&quot;</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">generic_str</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># generic variable names</span>
+    <span class="c1"># (                 begin of capture group----------------------------NAMES</span>
+    <span class="c1">#     [a-z]         lowercase letter (identifiers must begin with a letter)</span>
+    <span class="c1">#     [a-z_0-9]*    lowercase letter/underscore/digit. zero or more times</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="c1"># [^=]              any character that is not an equal sign</span>
+    <span class="n">_generic_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;([a-z][a-z_0-9,]*)\s*:[^=]&quot;</span><span class="p">,</span> <span class="n">generic_str</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="c1"># capture generic &quot;type to end&quot; of generic description</span>
+    <span class="c1"># used to identify the type and default value, but the default value is</span>
+    <span class="c1"># optional</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group----------------------------TYPES</span>
+    <span class="c1">#     .*?           any character zero or more times. lazy evaluation</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (?:               begin of non-capture group</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1">#     |             OR</span>
+    <span class="c1">#     \)            closing parenthesis</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
+    <span class="c1">#     ;             semicolon</span>
+    <span class="c1"># )                 end of non-capture group</span>
+    <span class="n">__generic_type_to_end</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;:\s*(.*?)\s*(?:;|\)\s*;)&quot;</span><span class="p">,</span> <span class="n">generic_str</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="c1"># generic variable types (e.g. integer)</span>
+    <span class="n">_generic_types</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">gtte</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">gtte</span> <span class="ow">in</span> <span class="n">__generic_type_to_end</span>
+    <span class="p">]</span>
+    <span class="c1"># generic default values (e.g. 42)</span>
+    <span class="c1"># only if one is specified with &quot;:=&quot;, None otherwise</span>
+    <span class="n">_generic_def_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">gt</span> <span class="ow">in</span> <span class="n">__generic_type_to_end</span><span class="p">:</span>
+        <span class="n">def_val</span> <span class="o">=</span> <span class="n">gt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;:=&quot;</span> <span class="ow">in</span> <span class="n">gt</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">_generic_def_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">def_val</span><span class="p">)</span>
+
+    <span class="c1"># account for  multiple port names in the same line, separated by a comma</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="n">_gn</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">_gn</span> <span class="ow">in</span> <span class="n">_generic_names</span><span class="p">]</span>
+    <span class="c1"># correct generic names list. every generic variable is an entry in a list</span>
+    <span class="n">generic_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">gn</span> <span class="k">for</span> <span class="n">_gn</span> <span class="ow">in</span> <span class="n">_generic_names</span> <span class="k">for</span> <span class="n">gn</span> <span class="ow">in</span> <span class="n">_gn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+    <span class="c1"># correct generic types and default values. expand lists depending on count</span>
+    <span class="n">generic_types</span><span class="p">,</span> <span class="n">generic_def_vals</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">_gt</span><span class="p">,</span> <span class="n">_gd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">_generic_types</span><span class="p">,</span> <span class="n">_generic_def_vals</span><span class="p">):</span>
+        <span class="n">generic_types</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">_gt</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">generic_def_vals</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">_gd</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="c1"># generic names, types and default values as a list of tuples</span>
+    <span class="n">generics</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">gn</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="n">gd</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">gn</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="n">gd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">generic_names</span><span class="p">,</span> <span class="n">generic_types</span><span class="p">,</span> <span class="n">generic_def_vals</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">generics</span></div>
+
+
+<div class="viewcode-block" id="get_constants"><a class="viewcode-back" href="../../index.html#regex_fun.vhdl.get_constants">[docs]</a><span class="k">def</span> <span class="nf">get_constants</span><span class="p">(</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;Parses constants out of an input string</span>
+
+<span class="sd">    The input is expected to be a string representing vhdl file content.</span>
+<span class="sd">    Specifically, one where constants are defined. If constants are defined in</span>
+<span class="sd">    the input, they are parsed. If nothing is found that could be parsed, the</span>
+<span class="sd">    function returns None. If the generic parameters could be parsed, they are</span>
+<span class="sd">    returned with their individual properties.</span>
+<span class="sd">    A constant consists of the following properties:</span>
+<span class="sd">    - name</span>
+<span class="sd">    - type</span>
+<span class="sd">    - default value</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        buffer {str} -- input string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple[str, str, str]] -- constants names, types and default values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">_get_raw_vhdl</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="c1"># constant          &quot;constant&quot;</span>
+    <span class="c1"># \s+               one or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group</span>
+    <span class="c1">#     [a-z]         identifiers must begin with a letter</span>
+    <span class="c1">#     [a-z_0-9]*    any letter, underscore or digit. zero or more times</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="n">constant_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;constant\s+([a-z][a-z_0-9]*)\s*:&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">constant_names</span> <span class="o">==</span> <span class="p">[]:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># :                 double colon</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group</span>
+    <span class="c1">#     .*?           any character zero or more times. lazy evaluation</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># :=                double colon and equals sign</span>
+    <span class="n">constant_types</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;:\s*(.*?)\s*:=&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="c1"># :=                double colon and equals sign</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># (                 begin of capture group</span>
+    <span class="c1">#     .*?           any character zero or more times. lazy evaluation</span>
+    <span class="c1"># )                 end of capture group</span>
+    <span class="c1"># \s*               zero or more whitespaces</span>
+    <span class="c1"># ;                 semicolon</span>
+    <span class="n">constant_def_vals</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;:=\s*(.*?)\s*;&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+    <span class="c1"># constant names, types and default values as a list of tuples</span>
+    <span class="n">constants</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">cn</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">cd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">constant_names</span><span class="p">,</span> <span class="n">constant_types</span><span class="p">,</span> <span class="n">constant_def_vals</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">constants</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Regex Fun 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Maximilian Tosch.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+    </div>
+  </body>
+</html>
