@@ -56,9 +56,11 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-#docs/_build/
 # docs/build/doctrees/
-!docs/build/
+# !docs/build/html/**
+docs/doctrees/
+# docs/make.bat
+
 
 # exclude files to build
 make.bat
