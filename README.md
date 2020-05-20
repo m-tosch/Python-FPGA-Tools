@@ -6,7 +6,17 @@ regex tools :)
 
 ## Usage
 
-## run unit tests
+## Documentation
+
+doc/build
+
+or build it on your own
+
+```cmd
+pytest
+```
+
+## Tests
 
 If you have [pytest](https://pypi.org/project/pytest/) installed, you can run all tests from the command line:
 
