@@ -8,8 +8,14 @@ regex tools :)
 
 ## run unit tests
 
-test_vhdl.py
+If you have [pytest](https://pypi.org/project/pytest/) installed, you can run all tests from the command line:
 
 ```cmd
-python -m tests.vhdl.test_vhdl
+pytest
+```
+
+If you want to run a specific test file, e.g. `test_vhdl.py`:
+
+```cmd
+pytest ./tests/vhdl/test_vhdl.py
 ```
