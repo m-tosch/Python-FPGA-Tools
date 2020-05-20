@@ -54,7 +54,7 @@ class TestVHDL(unittest.TestCase):
         expected = [
             ("N", "integer", "42"),
             ("M", "std_logic", None),
-            ("O", "std_logic", None),
+            ("", "std_logic", None),
         ]
         # assert
         self.assertEqual(generics, expected)
