@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - shell: bash
-        env:
+        run: |
+          sudo sh ./docs/update_gh_pages.sh
+        with:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
           THE_ANSWER: ${{ secrets.THE_ANSWER }}
-        run: |
-          sudo sh ./docs/update_gh_pages.sh
