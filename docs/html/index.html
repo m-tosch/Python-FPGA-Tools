@@ -23,6 +23,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Regex Fun 0.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -37,8 +40,100 @@
 <div class="toctree-wrapper compound">
 </div>
 </div>
-<div class="section" id="vhdl">
-<h1>vhdl<a class="headerlink" href="#vhdl" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-regex_fun.vhdl">
+<span id="vhdl"></span><h1>vhdl<a class="headerlink" href="#module-regex_fun.vhdl" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="regex_fun.vhdl.get_constants">
+<code class="sig-name descname">get_constants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">buffer</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/regex_fun/vhdl.html#get_constants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_constants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses constants out of an input string 43</p>
+<p>The input is expected to be a string representing vhdl file content.
+Specifically, one where constants are defined. If constants are defined in
+the input, they are parsed. If nothing is found that could be parsed, the
+function returns None. If the generic parameters could be parsed, they are
+returned with their individual properties.
+A constant consists of the following properties:
+- name
+- type
+- default value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- input string</strong> (<em>buffer</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List[Tuple[str, str, str]] – constants names, types and default values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="regex_fun.vhdl.get_entity">
+<code class="sig-name descname">get_entity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">buffer</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/regex_fun/vhdl.html#get_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the entity out of an input string</p>
+<p>The input is expected to be a string representing vhdl file content. If an
+entity is defined within this content, an entity block is parsed if one is
+found. If nothing is found that could be parsed, the function returns
+None. If the entity could be parsed, it is returned as a string beginning
+with “entity” and ending on “end &lt;name&gt;;” or “end entity;”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- input string</strong> (<em>buffer</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Optional[str] – entity string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="regex_fun.vhdl.get_generics">
+<code class="sig-name descname">get_generics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">buffer</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/regex_fun/vhdl.html#get_generics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_generics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses entity generics out of an input string</p>
+<p>The input is expected to be a string representing vhdl file content. If an
+entity is defined within this content, a generic block is parsed if one is
+found. If nothing is found that could be parsed, the function returns
+None. If the generic parameters could be parsed, they are returned with
+their individual properties.</p>
+<p>A generic parameter consists of the following properties:</p>
+<ul class="simple">
+<li><p>name</p></li>
+<li><p>type</p></li>
+<li><p>default value (optional)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- input string</strong> (<em>buffer</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List[Tuple[str, str, str]] – generic names, types and default values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="regex_fun.vhdl.get_ports">
+<code class="sig-name descname">get_ports</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">buffer</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/regex_fun/vhdl.html#get_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses entity ports out of an input string</p>
+<p>The input is expected to be a string representing vhdl file content. If an
+entity is defined within this content, the port block is parsed if one is
+found. If nothing is found that could be parsed, the function returns
+None. If the ports could be parsed, they are returned with
+their individual properties.</p>
+<p>A port consists of the following properties:</p>
+<ul class="simple">
+<li><p>name</p></li>
+<li><p>direction</p></li>
+<li><p>type</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- input string</strong> (<em>buffer</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Optional[List[Tuple[str, str, str]]] – port names, direction and types</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -58,7 +153,7 @@
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Regex Fun’s documentation!</a></li>
-<li><a class="reference internal" href="#vhdl">vhdl</a></li>
+<li><a class="reference internal" href="#module-regex_fun.vhdl">vhdl</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
@@ -89,6 +184,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Regex Fun 0.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
