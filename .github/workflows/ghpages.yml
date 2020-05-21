@@ -33,7 +33,7 @@ jobs:
           git checkout "$target_branch"
           git rebase "${remote_name}/${main_branch}"
           cd ./docs
-          rm -rf html/*
+          rm -rf html/{*,.*}
           echo "RM -RF HTML"
           make html
           cd ..
