@@ -48,7 +48,6 @@ jobs:
           rm -rf html/*
           rm -rf html/.buildinfo html/.nojekyll
           echo "RM -RF HTML"
-          make clean
           make html
           cd ..
           git add "${GITHUB_WORKSPACE}/docs"
