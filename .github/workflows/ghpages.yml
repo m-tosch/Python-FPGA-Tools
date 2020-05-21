@@ -32,7 +32,8 @@ jobs:
           git config user.email "${GITHUB_ACTOR}@bots.github.com"
           git checkout "$target_branch"
           git rebase "${remote_name}/${main_branch}"
-          make ./docs/ html
+          make -C ./docs html
+          echo "MAKE IS DONE"
           git add "$build_dir"
           git commit -m "updated GitHub Pages"
           if [ $? -ne 0 ]; then
@@ -41,3 +42,4 @@ jobs:
           fi
           git remote set-url "$remote_name" "$repo_uri" # includes access token
           git push --force-with-lease "$remote_name" "$target_branch"
+          echo "END OF SCRIPT"
