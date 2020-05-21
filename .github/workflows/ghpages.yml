@@ -1,0 +1,15 @@
+name: ghpages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: ./docs/update_gh_pages
+        env:
+         GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
