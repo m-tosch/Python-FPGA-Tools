@@ -27,7 +27,9 @@ jobs:
           target_branch="gh-pages"
           build_dir="${GITHUB_WORKSPACE}/docs"
           cd $GITHUB_WORKSPACE
-          ls
+
+          pip install -r requirements.txt
+
           git config user.name "$GITHUB_ACTOR"
           git config user.email "${GITHUB_ACTOR}@bots.github.com"
           git checkout "$target_branch"
