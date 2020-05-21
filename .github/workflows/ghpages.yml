@@ -15,4 +15,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
-          sudo ./docs/update_gh_pages.sh
+          sudo ./docs/update_gh_pages
