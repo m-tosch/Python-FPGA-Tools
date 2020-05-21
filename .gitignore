@@ -60,7 +60,7 @@ docs/doctrees/
 
 # exclude files to build
 make.bat
-Makefile
+# Makefile
 
 # PyBuilder
 target/
