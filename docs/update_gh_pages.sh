@@ -3,7 +3,7 @@
 set -eu
 
 echo "STARTING..."
-echo ${ENV_THE_ANSWER}
+echo $THE_ANSWER
 echo ${THE_ANSWER}
 echo ${GITHUB_WORKSPACE}
 echo $GITHUB_WORKSPACE

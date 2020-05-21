@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - run: sudo sh ./docs/update_gh_pages.sh
+      - name: run my script
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
           THE_ANSWER: ${{ secrets.THE_ANSWER }}
+        run: sudo sh ./docs/update_gh_pages.sh
