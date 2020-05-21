@@ -37,11 +37,15 @@ jobs:
           cd ..
           echo "MAKE IS DONE"
           git add "${GITHUB_WORKSPACE}/docs/."
+          echo "git add"
           git commit -m "updated GitHub Pages"
           if [ $? -ne 0 ]; then
               echo "nothing to commit"
               exit 0
           fi
+          echo "git commit"
           git remote set-url "$remote_name" "$repo_uri" # includes access token
+          echo "git remote set url"
           git push --force-with-lease "$remote_name" "$target_branch"
+          echo "git push"
           echo "...ENDING"
