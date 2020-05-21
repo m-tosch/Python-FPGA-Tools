@@ -29,6 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
+          echo "STARTING..."
           echo ${GITHUB_WORKSPACE}
           echo ${GITHUB_REPOSITORY}
           echo "-------------"
@@ -47,6 +48,7 @@ jobs:
           rm -rf html/*
           rm -rf html/.buildinfo html/.nojekyll
           echo "RM -RF HTML"
+          make clean
           make html
           cd ..
           git add "${GITHUB_WORKSPACE}/docs"
