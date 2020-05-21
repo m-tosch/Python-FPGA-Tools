@@ -4,11 +4,9 @@ set -eu
 
 echo "STARTING..."
 echo $THE_ANSWER
-echo ${THE_ANSWER}
-echo ${GITHUB_WORKSPACE}
 echo $GITHUB_WORKSPACE
 
-repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+repo_uri="https://x-access-token:$DEPLOY_TOKEN@github.com/$GITHUB_REPOSITORY.git"
 remote_name="origin"
 main_branch="master"
 target_branch="gh-pages"
