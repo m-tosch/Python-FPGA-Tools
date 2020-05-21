@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.8]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,10 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-          THE_ANSWER: ${{ secrets.THE_ANSWER }}
-          A_TEST: a_test
         run: |
-          echo "STARTING..."
           echo ${GITHUB_WORKSPACE}
           echo ${GITHUB_REPOSITORY}
           echo "-------------"
@@ -52,17 +49,12 @@ jobs:
           echo "RM -RF HTML"
           make html
           cd ..
-          echo "MAKE IS DONE"
           git add "${GITHUB_WORKSPACE}/docs"
-          echo "git add"
           git commit -m "updated GitHub Pages"
           if [ $? -ne 0 ]; then
               echo "nothing to commit"
               exit 0
           fi
-          echo "git commit"
           git remote set-url "$remote_name" "$repo_uri" # includes access token
-          echo "git remote set url"
           git push --force-with-lease "$remote_name" "$target_branch"
-          echo "git push"
           echo "...ENDING"
