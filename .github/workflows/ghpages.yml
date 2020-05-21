@@ -18,10 +18,8 @@ jobs:
           A_TEST: a_test
         run: |
           echo "STARTING..."
-          echo $THE_ANSWER
-          echo ${THE_ANSWER}
-          echo $A_TEST
-          echo ${A_TEST}
+          echo ${GITHUB_WORKSPACE}
+          echo ${GITHUB_REPOSITORY}
           echo "-------------"
           repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           remote_name="origin"
