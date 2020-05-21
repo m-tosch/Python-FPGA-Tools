@@ -12,8 +12,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
       - uses: actions/checkout@v1
       - shell: bash
         env:
@@ -32,8 +31,6 @@ jobs:
           target_branch="gh-pages"
           build_dir="${GITHUB_WORKSPACE}/docs"
           cd $GITHUB_WORKSPACE
-
-          pip install -r requirements.txt
 
           git config user.name "$GITHUB_ACTOR"
           git config user.email "${GITHUB_ACTOR}@bots.github.com"
