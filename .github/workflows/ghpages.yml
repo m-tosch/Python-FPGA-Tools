@@ -17,4 +17,5 @@ jobs:
           THE_ANSWER: ${{ secrets.THE_ANSWER }}
           A_TEST: a_test
         run: |
-          sudo sh ./docs/update_gh_pages.sh $A_TEST
+          export A_TEST=$A_TEST
+          sudo sh ./docs/update_gh_pages.sh
