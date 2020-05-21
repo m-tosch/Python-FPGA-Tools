@@ -33,10 +33,12 @@ jobs:
           git checkout "$target_branch"
           git rebase "${remote_name}/${main_branch}"
           cd ./docs
+          rm -rf html/*
+          echo "RM -RF HTML"
           make html
           cd ..
           echo "MAKE IS DONE"
-          git add "${GITHUB_WORKSPACE}/docs/."
+          git add "${GITHUB_WORKSPACE}/docs"
           echo "git add"
           git commit -m "updated GitHub Pages"
           if [ $? -ne 0 ]; then
