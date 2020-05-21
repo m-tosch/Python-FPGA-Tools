@@ -36,7 +36,7 @@ jobs:
           make html
           cd ..
           echo "MAKE IS DONE"
-          git add "$build_dir"
+          git add "${GITHUB_WORKSPACE}/docs/."
           git commit -m "updated GitHub Pages"
           if [ $? -ne 0 ]; then
               echo "nothing to commit"
