@@ -2,6 +2,10 @@
 
 set -eu
 
+echo "$GITHUB_WORKSPACE"
+echo $GITHUB_WORKSPACE
+echo ${GITHUB_WORKSPACE}
+
 echo "$THE_ANSWER"
 
 repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
