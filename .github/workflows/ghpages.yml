@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Set env
+        run: echo ::set-env name=DEPLOY_TOKEN::${{ secrets.DEPLOY_TOKEN }}
       - shell: bash
         run: |
           sudo sh ./docs/update_gh_pages.sh
