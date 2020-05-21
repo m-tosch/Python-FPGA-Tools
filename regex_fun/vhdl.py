@@ -277,7 +277,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
 
 
 def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
-    """Parses constants out of an input string
+    """Parses constants out of an input string 42
 
     The input is expected to be a string representing vhdl file content.
     Specifically, one where constants are defined. If constants are defined in
