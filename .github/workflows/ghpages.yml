@@ -19,14 +19,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Build documentation
       - uses: actions/checkout@v1
       - shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
-          echo "STARTING..."
+          echo "Build documentation"
           echo ${GITHUB_WORKSPACE}
           echo ${GITHUB_REPOSITORY}
 
