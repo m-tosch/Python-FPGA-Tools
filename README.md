@@ -1,7 +1,7 @@
 # regex fun
 
-[![](https://github.com/m-tosch/regex_fun/workflows/build/badge.svg)](https://github.com/m-tosch/regex_fun/actions?query=workflow%3Abuild)
-[![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://m-tosch.github.io/regex_fun/html/index.html)
+![build](https://github.com/m-tosch/regex_fun/workflows/build/badge.svg)
+![docs](https://github.com/m-tosch/regex_fun/workflows/ghpages/badge.svg)
 
 regex tools :)
 
