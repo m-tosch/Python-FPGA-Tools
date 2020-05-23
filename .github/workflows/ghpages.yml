@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build doc
+      - name: Build sphinx doc
         uses: ammaraskar/sphinx-action@master # build sphinx doc
         with:
           docs-folder: "docs/"
