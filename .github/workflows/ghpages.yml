@@ -25,7 +25,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           personal_token: ${{ secrets.DEPLOY_TOKEN }}
           publish_dir: ./docs/html
-          publish_branch: master
+          publish_branch: gh-pages
           allow_empty_commit: true
           keep_files: false
           user_name: 'github-actions[bot]'
