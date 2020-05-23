@@ -76,7 +76,7 @@ def get_entity(buffer: str) -> Optional[str]:
 
 
 def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
-    """Parses entity ports out of an input string 44
+    """Parses entity ports out of an input string
 
     The input is expected to be a string representing vhdl file content. If an
     entity is defined within this content, the port block is parsed if one is
