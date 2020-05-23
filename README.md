@@ -10,16 +10,9 @@ TODO
 
 ## Documentation
 
-The documentation can be found [here](https://m-tosch.github.io/regex_fun/) (for more information see the /docs folder)
+The documentation can be found [here](https://m-tosch.github.io/regex_fun/)
 
-To generate the documentation locally, sphinx must be installed. Inside the /docs folder, run
-
-```cmd
-<build-script> html
-```
-
-with `<build-script>` being either make.bat or Makefile depending on your system.
-
+see the /docs folder for more information
 
 ## Tests
 
