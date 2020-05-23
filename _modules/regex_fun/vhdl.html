@@ -50,11 +50,11 @@
 <span class="sd">    If it could be changed, the modified input string is returned. If the</span>
 <span class="sd">    input string could not be changed, it is returned.</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        buffer {str} -- input string</span>
+<span class="sd">    Args:</span>
+<span class="sd">        buffer (str): input string</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str -- modified input string</span>
+<span class="sd">        str: modified input string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># remove all VHDL comments</span>
     <span class="c1"># (                 begin of capture group</span>
@@ -80,11 +80,11 @@
 <span class="sd">    None. If the entity could be parsed, it is returned as a string beginning</span>
 <span class="sd">    with &quot;entity&quot; and ending on &quot;end &lt;name&gt;;&quot; or &quot;end entity;&quot;</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        buffer {str} -- input string</span>
+<span class="sd">    Args:</span>
+<span class="sd">        buffer (str): input string</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[str] -- entity string</span>
+<span class="sd">        Optional[str]: entity string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># [^- ]             anything that is NOT a dash or whitespace</span>
     <span class="c1"># +                 one or more times</span>
@@ -129,11 +129,11 @@
 <span class="sd">    - direction\n</span>
 <span class="sd">    - type\n</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        buffer {str} -- input string</span>
+<span class="sd">    Args:</span>
+<span class="sd">        buffer (str): input string</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[List[Tuple[str, str, str]]] -- port names, direction and types</span>
+<span class="sd">        Optional[List[Tuple[str, str, str]]]: port names, direction and types</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># extract the entity string if it exists</span>
     <span class="n">entity</span> <span class="o">=</span> <span class="n">get_entity</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
@@ -227,11 +227,11 @@
 <span class="sd">    - type\n</span>
 <span class="sd">    - default value (optional)\n</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        buffer {str} -- input string</span>
+<span class="sd">    Args:</span>
+<span class="sd">        buffer (str): input string</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[str, str, str]] -- generic names, types and default values</span>
+<span class="sd">        List[Tuple[str, str, str]]: generic names, types and default values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># extract the entity string if it exists</span>
     <span class="n">entity</span> <span class="o">=</span> <span class="n">get_entity</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
@@ -328,11 +328,11 @@
 <span class="sd">    - type</span>
 <span class="sd">    - default value</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        buffer {str} -- input string</span>
+<span class="sd">    Args:</span>
+<span class="sd">        buffer (str): input string</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[str, str, str]] -- constants names, types and default values</span>
+<span class="sd">        List[Tuple[str, str, str]]: constants names, types and default values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">_get_raw_vhdl</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
     <span class="c1"># constant          &quot;constant&quot;</span>
