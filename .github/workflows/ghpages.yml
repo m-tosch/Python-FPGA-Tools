@@ -11,47 +11,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+
+      - name: Build doc
+        uses: ammaraskar/sphinx-action@master # build sphinx doc
         with:
-          python-version: 3.8
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - uses: actions/checkout@v1
-      - shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-        run: |
-          echo "Build documentation"
-          echo ${GITHUB_WORKSPACE}
-          echo ${GITHUB_REPOSITORY}
+          docs-folder: "docs/"
+          build-command: "make html"
 
-          repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          remote_name="origin"
-          main_branch="master"
-          target_branch="gh-pages"
-          build_dir="${GITHUB_WORKSPACE}/docs"
-          cd $GITHUB_WORKSPACE
-
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "${GITHUB_ACTOR}@bots.github.com"
-          git checkout "$target_branch"
-          git rebase "${remote_name}/${main_branch}"
-          cd ./docs
-          rm -rf html/*
-          rm -rf html/.buildinfo html/.nojekyll
-          echo "RM -RF HTML"
-          make html
-          cd ..
-          git add "${GITHUB_WORKSPACE}/docs"
-          git commit -m "updated GitHub Pages"
-          if [ $? -ne 0 ]; then
-              echo "nothing to commit"
-              exit 0
-          fi
-          git remote set-url "$remote_name" "$repo_uri" # includes access token
-          git push --force-with-lease "$remote_name" "$target_branch"
-          echo "...ENDING"
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3 # deploy doc to gh-pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          publish_dir: ./docs/html
+          publish_branch: master
+          allow_empty_commit: true
+          keep_files: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: ${{ github.event.head_commit.message }}
