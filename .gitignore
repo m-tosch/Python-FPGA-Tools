@@ -56,11 +56,7 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/doctrees/
-
-# exclude files to build
 make.bat
-# Makefile
 
 # PyBuilder
 target/
