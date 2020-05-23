@@ -1,7 +1,7 @@
 # regex fun
 
-[![build](https://github.com/m-tosch/regex_fun/workflows/build/badge.svg)](https://github.com/m-tosch/regex_fun/actions?query=workflow%3Aci-build)
-[![docs](https://github.com/m-tosch/regex_fun/workflows/ghpages/badge.svg)](https://m-tosch.github.io/regex_fun/)
+[![](https://github.com/m-tosch/regex_fun/workflows/ci-build/badge.svg)](https://github.com/m-tosch/regex_fun/actions?query=workflow%3Aci-build)
+[![](https://github.com/m-tosch/regex_fun/workflows/ghpages/badge.svg)](https://m-tosch.github.io/regex_fun/)
 
 regex tools :)
 
