@@ -3,19 +3,23 @@
 [![](https://github.com/m-tosch/regex_fun/workflows/ci-build/badge.svg)](https://github.com/m-tosch/regex_fun/actions?query=workflow%3Aci-build)
 [![](https://github.com/m-tosch/regex_fun/workflows/docs/badge.svg)](https://m-tosch.github.io/regex_fun/)
 
-regex tools :)
 
 ## Usage
 
+TODO
+
 ## Documentation
 
-doc/build
+The documentation can be found [here](https://m-tosch.github.io/regex_fun/) (for more information see the /docs folder)
 
-or build it on your own
+To generate the documentation locally, sphinx must be installed. Inside the /docs folder, run
 
 ```cmd
-pytest
+<build-script> html
 ```
+
+with `<build-script>` being either make.bat or Makefile depending on your system.
+
 
 ## Tests
 
