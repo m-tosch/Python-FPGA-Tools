@@ -1,7 +1,0 @@
-{
-    "recommendations": [
-        "ms-python.python",
-        "njpwerner.autodocstring",
-        "davidanson.vscode-markdownlint",
-    ]
-}
