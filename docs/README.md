@@ -4,7 +4,9 @@ The documentation is build with [sphinx](https://www.sphinx-doc.org/en/master/).
 
 ## set-up
 
-The documentation is separated from the master and uploaded to the [gh-pages](https://github.com/m-tosch/regex_fun/tree/gh-pages) branch by an automatic workflow
+The documentation is separated from the master and uploaded to the [gh-pages](https://github.com/m-tosch/regex_fun/tree/gh-pages) branch by an automatic [workflow](https://github.com/m-tosch/regex_fun/actions?query=workflow%3Adocs)
+
+## local build
 
 To generate the documentation locally, sphinx must be installed.
 
