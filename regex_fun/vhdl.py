@@ -11,11 +11,11 @@ def _get_raw_vhdl(buffer: str) -> str:
     If it could be changed, the modified input string is returned. If the
     input string could not be changed, it is returned.
 
-    Arguments:
-        buffer {str} -- input string
+    Args:
+        buffer (str): input string
 
     Returns:
-        str -- modified input string
+        str: modified input string
     """
     # remove all VHDL comments
     # (                 begin of capture group
@@ -41,11 +41,11 @@ def get_entity(buffer: str) -> Optional[str]:
     None. If the entity could be parsed, it is returned as a string beginning
     with "entity" and ending on "end <name>;" or "end entity;"
 
-    Arguments:
-        buffer {str} -- input string
+    Args:
+        buffer (str): input string
 
     Returns:
-        Optional[str] -- entity string
+        Optional[str]: entity string
     """
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
@@ -90,11 +90,11 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     - direction\n
     - type\n
 
-    Arguments:
-        buffer {str} -- input string
+    Args:
+        buffer (str): input string
 
     Returns:
-        Optional[List[Tuple[str, str, str]]] -- port names, direction and types
+        Optional[List[Tuple[str, str, str]]]: port names, direction and types
     """
     # extract the entity string if it exists
     entity = get_entity(buffer)
@@ -188,11 +188,11 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     - type\n
     - default value (optional)\n
 
-    Arguments:
-        buffer {str} -- input string
+    Args:
+        buffer (str): input string
 
     Returns:
-        List[Tuple[str, str, str]] -- generic names, types and default values
+        List[Tuple[str, str, str]]: generic names, types and default values
     """
     # extract the entity string if it exists
     entity = get_entity(buffer)
@@ -289,11 +289,11 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     - type
     - default value
 
-    Arguments:
-        buffer {str} -- input string
+    Args:
+        buffer (str): input string
 
     Returns:
-        List[Tuple[str, str, str]] -- constants names, types and default values
+        List[Tuple[str, str, str]]: constants names, types and default values
     """
     buffer = _get_raw_vhdl(buffer)
     # constant          "constant"
