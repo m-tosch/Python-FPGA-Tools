@@ -15,3 +15,5 @@ Inside the /docs folder, run
 ```
 
 with `<build-script>` being either the make.bat or Makefile depending on your system.
+
+This will create a /html folder in which you find an index.html file to view the documentation in a browser
