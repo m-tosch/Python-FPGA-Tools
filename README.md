@@ -27,3 +27,15 @@ If you want to run a specific test file, e.g. `test_vhdl.py`:
 ```cmd
 pytest ./tests/vhdl/test_vhdl.py
 ```
+
+## Coverage
+
+The coverage report can be found [here](https://codecov.io/gh/m-tosch/regex_fun)
+
+If you have [pytest](https://pypi.org/project/pytest/) and [coverage](https://pypi.org/project/coverage/) installed, generate a local coverage report from the command line:
+
+```cmd
+coverage run -m pytest
+```
+
+To view the coverage report, open the index.html file inside the generated /htmlcov folder in a browser
