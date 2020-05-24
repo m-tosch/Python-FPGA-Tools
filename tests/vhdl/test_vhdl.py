@@ -2,10 +2,6 @@ import unittest
 import re
 from regex_fun import vhdl
 
-# TODO
-# test all individual functions
-# test faulty input (e.g. empty .vhd file)
-
 
 class TestVHDL(unittest.TestCase):
     def setUp(self):
