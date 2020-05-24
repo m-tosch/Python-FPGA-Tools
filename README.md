@@ -38,4 +38,12 @@ If you have [pytest](https://pypi.org/project/pytest/) and [coverage](https://py
 coverage run -m pytest
 ```
 
-To view the coverage report, open the index.html file inside the generated /htmlcov folder in a browser
+To generate an html report run
+
+```cmd
+coverage html
+```
+
+view the report by opening the index.html file inside the generated /htmlcov folder in a browser
+
+To generate other report forms, see the [cmd line usage](https://coverage.readthedocs.io/en/coverage-5.1/cmd.html) for the `coverage` package
