@@ -69,6 +69,7 @@ target/
 *.vhd
 !module.vhd
 !constants.vhd
+!dummy.vhd
 
 # TODO
 TODO.md
