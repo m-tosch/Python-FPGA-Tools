@@ -120,7 +120,3 @@ class TestVHDL(unittest.TestCase):
         constants = vhdl.get_constants(nothing)
         # assert
         self.assertIsNone(constants)
-
-
-if __name__ == "__main__":
-    unittest.main()
