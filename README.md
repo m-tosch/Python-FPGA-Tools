@@ -32,7 +32,7 @@ pytest ./tests/vhdl/test_vhdl.py
 
 The coverage report can be found [here](https://codecov.io/gh/m-tosch/regex_fun)
 
-If you have [pytest](https://pypi.org/project/pytest/) and [coverage](https://pypi.org/project/coverage/) installed, generate a local coverage report from the command line:
+If you have [pytest](https://pypi.org/project/pytest/) and [coverage](https://pypi.org/project/coverage/) installed, you can generate a coverage report from the command line:
 
 ```cmd
 coverage run -m pytest
