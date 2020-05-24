@@ -7,6 +7,8 @@ class TestVHDL(unittest.TestCase):
     def setUp(self):
         with open("tests/vhdl/module.vhd", "r") as f:
             self.module = f.read()
+        with open("tests/vhdl/dummy.vhd", "r") as f:
+            self.dummy = f.read()
         with open("tests/vhdl/constants.vhd", "r") as f:
             self.constants = f.read()
 
@@ -77,6 +79,18 @@ class TestVHDL(unittest.TestCase):
         nothing = ""
         # action
         generics = vhdl.get_generics(nothing)
+        # assert
+        self.assertIsNone(generics)
+
+    def test_no_ports(self):
+        # action
+        ports = vhdl.get_ports(self.dummy)
+        # assert
+        self.assertIsNone(ports)
+
+    def test_no_generics(self):
+        # action
+        generics = vhdl.get_generics(self.dummy)
         # assert
         self.assertIsNone(generics)
 
