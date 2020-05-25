@@ -36,7 +36,7 @@ def get_entity(buffer: str) -> Optional[str]:
     """Parses the entity out of an input string
 
     The input is expected to be a string representing vhdl file content. If an
-    entity is defined within this content, an entity block is parsed if one is
+    entity is defined within this content, the entity block is parsed if one is
     found. If nothing is found that could be parsed, the function returns
     None. If the entity could be parsed, it is returned as a string beginning
     with "entity" and ending on "end <name>;" or "end entity;"
@@ -274,6 +274,51 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         (pn, pd, pt) for pn, pd, pt in zip(port_names, port_dirs, port_types)
     ]
     return ports
+
+
+def get_architecture(buffer: str) -> Optional[str]:
+    """Parses the architecture out of an input string
+
+    The input is expected to be a string representing vhdl file content. If an
+    architecture is defined within this content, the architecture block is
+    parsed if one is found. If nothing is found that could be parsed, the
+    function returns None. If the architecture could be parsed, it is returned
+    as a string beginning with "architecture" and ending on
+    "end <name>;" or "end archtiecture;"
+
+    Args:
+        buffer (str): input string
+
+    Returns:
+        Optional[str]: architecture string
+    """
+    # [^- ]             anything that is NOT a dash or whitespace
+    # +                 one or more times
+    # \s*               zero or more whitespaces
+    # (                 begin of capture group---------------------------ENTITY
+    #     entity        "entity"
+    #     \s+           one or more whitespaces
+    #     .+            any character one or more times
+    #     \s+           one or more whitespaces
+    #     is            "is"
+    #     .*            any character zero or more times (->generics and ports)
+    #     end           "end"
+    #     \s+           one or more whitespaces
+    #     .*            any character zero or more times
+    #     ;             semicolon
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # architecture      "architecture"
+    m = re.search(
+        # r"[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture",
+        r"(architecture.*of.*is.*end\s+(?:architecture|\w)\s*;)",
+        _get_raw_vhdl(buffer),
+        flags=re.IGNORECASE,
+    )
+    if m is None:
+        return None
+    architecture = m.group(1)
+    return architecture
 
 
 def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
