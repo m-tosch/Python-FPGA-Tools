@@ -10,7 +10,11 @@ port(  clk,clk2,clk10   : in std_logic;
 end module;
 
 architecture behavioral of module is
--- some signals, types ...etc
+
+signal s1 : std_logic := '1';
+signal s2 : integer range 0 to N-1 := 0;
+signal s3 : std_logic_vector(N-1 downto 0) := (others=>0);
+
 begin
 
 process(clk, reset)
