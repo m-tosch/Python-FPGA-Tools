@@ -292,10 +292,12 @@ def get_architecture(buffer: str) -> Optional[str]:
     Returns:
         Optional[str]: architecture string
     """
+
+    # TODO doc
     # [^- ]             anything that is NOT a dash or whitespace
     # +                 one or more times
     # \s*               zero or more whitespaces
-    # (                 begin of capture group---------------------------ENTITY
+    # (                 begin of capture group---------------------ARCHITECTURE
     #     entity        "entity"
     #     \s+           one or more whitespaces
     #     .+            any character one or more times
@@ -309,15 +311,17 @@ def get_architecture(buffer: str) -> Optional[str]:
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # architecture      "architecture"
+    # raw_vhdl = _get_raw_vhdl(buffer)
+    # print(raw_vhdl)
     m = re.search(
-        # r"[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture",
-        r"(architecture.*of.*is.*end\s+(?:architecture|\w)\s*;)",
+        r"(architecture\s+[a-z0-9_]+\s+of\s+[a-z0-9_]+\s+is.*end\s+[a-z0-9_]+\s*;)",
         _get_raw_vhdl(buffer),
         flags=re.IGNORECASE,
     )
     if m is None:
         return None
     architecture = m.group(1)
+    # print(architecture)
     return architecture
 
 
