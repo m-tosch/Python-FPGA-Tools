@@ -43,6 +43,29 @@
 <div class="section" id="module-regex_fun.vhdl">
 <span id="vhdl"></span><h1>vhdl<a class="headerlink" href="#module-regex_fun.vhdl" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="regex_fun.vhdl.get_architecture">
+<code class="sig-name descname">get_architecture</code><span class="sig-paren">(</span><em class="sig-param">buffer: str</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="_modules/regex_fun/vhdl.html#get_architecture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_architecture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the architecture out of an input string</p>
+<p>The input is expected to be a string representing vhdl file content. If an
+architecture is defined within this content, the architecture block is
+parsed if one is found. If nothing is found that could be parsed, the
+function returns None. If the architecture could be parsed, it is returned
+as a string beginning with “architecture” and ending on
+“end &lt;name&gt;;” or “end archtiecture;”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<em>str</em>) – input string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>architecture string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="regex_fun.vhdl.get_constants">
 <code class="sig-name descname">get_constants</code><span class="sig-paren">(</span><em class="sig-param">buffer: str</em><span class="sig-paren">)</span> &#x2192; Optional[List[Tuple[str, str, str]]]<a class="reference internal" href="_modules/regex_fun/vhdl.html#get_constants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_constants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses constants out of an input string 43</p>
@@ -73,7 +96,7 @@ A constant consists of the following properties:
 <code class="sig-name descname">get_entity</code><span class="sig-paren">(</span><em class="sig-param">buffer: str</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="_modules/regex_fun/vhdl.html#get_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regex_fun.vhdl.get_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the entity out of an input string</p>
 <p>The input is expected to be a string representing vhdl file content. If an
-entity is defined within this content, an entity block is parsed if one is
+entity is defined within this content, the entity block is parsed if one is
 found. If nothing is found that could be parsed, the function returns
 None. If the entity could be parsed, it is returned as a string beginning
 with “entity” and ending on “end &lt;name&gt;;” or “end entity;”</p>
