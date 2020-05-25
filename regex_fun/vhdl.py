@@ -75,104 +75,6 @@ def get_entity(buffer: str) -> Optional[str]:
     return entity
 
 
-def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
-    """Parses entity ports out of an input string
-
-    The input is expected to be a string representing vhdl file content. If an
-    entity is defined within this content, the port block is parsed if one is
-    found. If nothing is found that could be parsed, the function returns
-    None. If the ports could be parsed, they are returned with
-    their individual properties.
-
-    A port consists of the following properties:
-
-    - name\n
-    - direction\n
-    - type\n
-
-    Args:
-        buffer (str): input string
-
-    Returns:
-        Optional[List[Tuple[str, str, str]]]: port names, direction and types
-    """
-    # extract the entity string if it exists
-    entity = get_entity(buffer)
-    if entity is None:
-        return None
-    # (                 begin of capture group---------------------ENTITY PORTS
-    #     port          "port"
-    #     \s*           zero or more whitespaces
-    #     \(            opening parenthesis
-    #     .*            any character zero or more times
-    #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
-    #     ;             semicolon
-    # )                 end of capture group
-    # \s*               zero or more whitespaces
-    # end               "end"
-    m = re.search(r"(port\s*\(.*\)\s*;)\s*end", entity, flags=re.IGNORECASE)
-    if m is None:
-        return None
-    port_str = m.group(1)
-    # port variable names
-    # (                 begin of capture group----------------------------NAMES
-    #     [a-z]         lowercase letter (identifiers must begin with that)
-    #     [a-z_0-9,]    lowercase letter/underscore/digit or comma
-    #     *             zero or more times
-    # )                 end of capture group
-    # \s*               zero or more whitespaces
-    # :                 double colon
-    _port_names = re.findall(
-        r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
-    )
-    # port directions (in, out, inout, buffer)
-    # :                 double colon
-    # \s*               zero or more whitespaces
-    # (                 begin of capture group------------------------DIRECTION
-    #     [a-z]{2,}     lowercase letter. two or more times (shortest is "in")
-    # )                 end of capture group
-    # \s+               one or more whitespaces
-    _port_dirs = re.findall(
-        r":\s*([a-z]{2,})\s+", port_str, flags=re.IGNORECASE
-    )
-    # port types (e.g. std_logic)
-    # :                 double colon
-    # \s*               zero or more whitespaces
-    # [a-z]{2,}         lowercase letter. two or more times
-    # \s+               one or more whitespaces
-    # (                 begin of capture group----------------------------TYPES
-    #     .+?           any character one or more times. lazy evaluation
-    # )                 end of capture group
-    # \s*               zero or more whitespaces
-    # (?:               begin of non-capture group
-    #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
-    #     ;             semicolon
-    #     |             OR
-    #     ;             semicolon
-    # )                 end of non-capture group
-    _port_types = re.findall(
-        r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
-    )
-
-    # account for  multiple port names in the same line, separated by a comma
-    count = [_pn.count(",") + 1 for _pn in _port_names]
-    # correct port names list. every port variable is an entry in the list
-    port_names = [pn for _pn in _port_names for pn in _pn.split(",")]
-    # correct port dirs, types list. expand lists depending on no. of ports
-    port_dirs, port_types = [], []
-    for c, _pd, _pt in zip(count, _port_dirs, _port_types):
-        port_dirs.extend([_pd] * c)
-        port_types.extend([_pt] * c)
-
-    # port names, directions and types as a list of tuples
-    ports = [
-        (pn, pd, pt) for pn, pd, pt in zip(port_names, port_dirs, port_types)
-    ]
-    return ports
-
-
 def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """Parses entity generics out of an input string
 
@@ -274,6 +176,104 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         for gn, gt, gd in zip(generic_names, generic_types, generic_def_vals)
     ]
     return generics
+
+
+def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
+    """Parses entity ports out of an input string
+
+    The input is expected to be a string representing vhdl file content. If an
+    entity is defined within this content, the port block is parsed if one is
+    found. If nothing is found that could be parsed, the function returns
+    None. If the ports could be parsed, they are returned with
+    their individual properties.
+
+    A port consists of the following properties:
+
+    - name\n
+    - direction\n
+    - type\n
+
+    Args:
+        buffer (str): input string
+
+    Returns:
+        Optional[List[Tuple[str, str, str]]]: port names, direction and types
+    """
+    # extract the entity string if it exists
+    entity = get_entity(buffer)
+    if entity is None:
+        return None
+    # (                 begin of capture group---------------------ENTITY PORTS
+    #     port          "port"
+    #     \s*           zero or more whitespaces
+    #     \(            opening parenthesis
+    #     .*            any character zero or more times
+    #     \)            closing parenthesis
+    #     \s*           zero or more whitespaces
+    #     ;             semicolon
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # end               "end"
+    m = re.search(r"(port\s*\(.*\)\s*;)\s*end", entity, flags=re.IGNORECASE)
+    if m is None:
+        return None
+    port_str = m.group(1)
+    # port variable names
+    # (                 begin of capture group----------------------------NAMES
+    #     [a-z]         lowercase letter (identifiers must begin with that)
+    #     [a-z_0-9,]    lowercase letter/underscore/digit or comma
+    #     *             zero or more times
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # :                 double colon
+    _port_names = re.findall(
+        r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
+    )
+    # port directions (in, out, inout, buffer)
+    # :                 double colon
+    # \s*               zero or more whitespaces
+    # (                 begin of capture group------------------------DIRECTION
+    #     [a-z]{2,}     lowercase letter. two or more times (shortest is "in")
+    # )                 end of capture group
+    # \s+               one or more whitespaces
+    _port_dirs = re.findall(
+        r":\s*([a-z]{2,})\s+", port_str, flags=re.IGNORECASE
+    )
+    # port types (e.g. std_logic)
+    # :                 double colon
+    # \s*               zero or more whitespaces
+    # [a-z]{2,}         lowercase letter. two or more times
+    # \s+               one or more whitespaces
+    # (                 begin of capture group----------------------------TYPES
+    #     .+?           any character one or more times. lazy evaluation
+    # )                 end of capture group
+    # \s*               zero or more whitespaces
+    # (?:               begin of non-capture group
+    #     \)            closing parenthesis
+    #     \s*           zero or more whitespaces
+    #     ;             semicolon
+    #     |             OR
+    #     ;             semicolon
+    # )                 end of non-capture group
+    _port_types = re.findall(
+        r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
+    )
+
+    # account for  multiple port names in the same line, separated by a comma
+    count = [_pn.count(",") + 1 for _pn in _port_names]
+    # correct port names list. every port variable is an entry in the list
+    port_names = [pn for _pn in _port_names for pn in _pn.split(",")]
+    # correct port dirs, types list. expand lists depending on no. of ports
+    port_dirs, port_types = [], []
+    for c, _pd, _pt in zip(count, _port_dirs, _port_types):
+        port_dirs.extend([_pd] * c)
+        port_types.extend([_pt] * c)
+
+    # port names, directions and types as a list of tuples
+    ports = [
+        (pn, pd, pt) for pn, pd, pt in zip(port_names, port_dirs, port_types)
+    ]
+    return ports
 
 
 def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
