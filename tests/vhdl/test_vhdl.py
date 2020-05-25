@@ -94,6 +94,13 @@ class TestVHDL(unittest.TestCase):
         # assert
         self.assertIsNone(generics)
 
+    def test_module_architecture(self):
+        # action
+        architecture = vhdl.get_architecture(self.module)
+        # assert
+        smoke = "architecture behavioral of module is" in architecture
+        self.assertTrue(smoke)
+
     def test_constants(self):
         # action
         constants = vhdl.get_constants(self.constants)
