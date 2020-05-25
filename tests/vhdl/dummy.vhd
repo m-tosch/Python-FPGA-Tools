@@ -7,7 +7,9 @@ entity dummy is
 end dummy;
 
 architecture behavioral of dummy is
+
 -- no signals
+
 begin
 
 -- no process
