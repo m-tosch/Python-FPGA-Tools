@@ -101,6 +101,12 @@ class TestVHDL(unittest.TestCase):
         # assert
         self.assertIsNone(generics)
 
+    def test_no_architecture(self):
+        # action
+        architecture = vhdl.get_architecture(self.dummy)
+        # assert
+        self.assertIsNone(architecture)
+
     def test_constants(self):
         # action
         constants = vhdl.get_constants(self.constants)
