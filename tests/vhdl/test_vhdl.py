@@ -58,6 +58,13 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(generics, expected)
         self.assertIsNotNone(generics)
 
+    def test_module_architecture(self):
+        # action
+        architecture = vhdl.get_architecture(self.module)
+        # assert
+        smoke = "architecture behavioral of module is" in architecture
+        self.assertTrue(smoke)
+
     def test_empty_entity(self):
         # arrange
         nothing = ""
@@ -93,13 +100,6 @@ class TestVHDL(unittest.TestCase):
         generics = vhdl.get_generics(self.dummy)
         # assert
         self.assertIsNone(generics)
-
-    def test_module_architecture(self):
-        # action
-        architecture = vhdl.get_architecture(self.module)
-        # assert
-        smoke = "architecture behavioral of module is" in architecture
-        self.assertTrue(smoke)
 
     def test_constants(self):
         # action
