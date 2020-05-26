@@ -292,26 +292,25 @@ def get_architecture(buffer: str) -> Optional[str]:
     Returns:
         Optional[str]: architecture string
     """
-
-    # [^- ]             anything that is NOT a dash or whitespace
-    # +                 one or more times
-    # \s*               zero or more whitespaces
     # (                 begin of capture group---------------------ARCHITECTURE
-    #     entity        "entity"
+    #     architecture  "architecture"
     #     \s+           one or more whitespaces
-    #     .+            any character one or more times
+    #     \w+           one or more word characters a-z0-9_
+    #     \s+           one or more whitespaces
+    #     of            "of"
+    #     \s+           one or more whitespaces
+    #     \w+           one or more word characters a-z0-9_
     #     \s+           one or more whitespaces
     #     is            "is"
-    #     .*            any character zero or more times (->generics and ports)
+    #     .*            any character zero or more times
     #     end           "end"
     #     \s+           one or more whitespaces
-    #     .*            any character zero or more times
+    #     \w+           one or more word characters a-z0-9_
+    #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of capture group
-    # \s*               zero or more whitespaces
-    # architecture      "architecture"
     m = re.search(
-        r"(architecture\s+\w+\s+of\s+\w+\s+is.*end\s+\w+;)",
+        r"(architecture\s+\w+\s+of\s+\w+\s+is.*end\s+\w+\s*;)",
         _get_raw_vhdl(buffer),
         flags=re.IGNORECASE,
     )
