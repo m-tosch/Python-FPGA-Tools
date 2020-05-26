@@ -72,7 +72,6 @@ def get_entity(buffer: str) -> Optional[str]:
     if m is None:
         return None
     entity = m.group(1)
-    print(entity)
     return entity
 
 
