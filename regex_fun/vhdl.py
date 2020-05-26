@@ -284,7 +284,7 @@ def get_architecture(buffer: str) -> Optional[str]:
     parsed if one is found. If nothing is found that could be parsed, the
     function returns None. If the architecture could be parsed, it is returned
     as a string beginning with "architecture" and ending on
-    "end <name>;" or "end archtiecture;"
+    "end <name>;" or "end architecture;"
 
     Args:
         buffer (str): input string
