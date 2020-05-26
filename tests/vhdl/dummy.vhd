@@ -1,15 +1,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity dummy is
--- no generics
--- no ports
-end dummy;
+-- no entity
+  -- no generics
+  -- no ports
+
 
 -- no architecture
 
--- no signals
+  -- no signals
 
-begin
-
--- no process
+  -- no process
