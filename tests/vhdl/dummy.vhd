@@ -6,12 +6,10 @@ entity dummy is
 -- no ports
 end dummy;
 
-architecture behavioral of dummy is
+-- no architecture
 
 -- no signals
 
 begin
 
 -- no process
-
-end behavioral;
