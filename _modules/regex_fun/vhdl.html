@@ -323,7 +323,7 @@
 <span class="sd">    parsed if one is found. If nothing is found that could be parsed, the</span>
 <span class="sd">    function returns None. If the architecture could be parsed, it is returned</span>
 <span class="sd">    as a string beginning with &quot;architecture&quot; and ending on</span>
-<span class="sd">    &quot;end &lt;name&gt;;&quot; or &quot;end archtiecture;&quot;</span>
+<span class="sd">    &quot;end &lt;name&gt;;&quot; or &quot;end architecture;&quot;</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        buffer (str): input string</span>
@@ -331,36 +331,31 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Optional[str]: architecture string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># TODO doc</span>
-    <span class="c1"># [^- ]             anything that is NOT a dash or whitespace</span>
-    <span class="c1"># +                 one or more times</span>
-    <span class="c1"># \s*               zero or more whitespaces</span>
     <span class="c1"># (                 begin of capture group---------------------ARCHITECTURE</span>
-    <span class="c1">#     entity        &quot;entity&quot;</span>
+    <span class="c1">#     architecture  &quot;architecture&quot;</span>
     <span class="c1">#     \s+           one or more whitespaces</span>
-    <span class="c1">#     .+            any character one or more times</span>
+    <span class="c1">#     \w+           one or more word characters a-z0-9_</span>
+    <span class="c1">#     \s+           one or more whitespaces</span>
+    <span class="c1">#     of            &quot;of&quot;</span>
+    <span class="c1">#     \s+           one or more whitespaces</span>
+    <span class="c1">#     \w+           one or more word characters a-z0-9_</span>
     <span class="c1">#     \s+           one or more whitespaces</span>
     <span class="c1">#     is            &quot;is&quot;</span>
-    <span class="c1">#     .*            any character zero or more times (-&gt;generics and ports)</span>
+    <span class="c1">#     .*            any character zero or more times</span>
     <span class="c1">#     end           &quot;end&quot;</span>
     <span class="c1">#     \s+           one or more whitespaces</span>
-    <span class="c1">#     .*            any character zero or more times</span>
+    <span class="c1">#     \w+           one or more word characters a-z0-9_</span>
+    <span class="c1">#     \s*           zero or more whitespaces</span>
     <span class="c1">#     ;             semicolon</span>
     <span class="c1"># )                 end of capture group</span>
-    <span class="c1"># \s*               zero or more whitespaces</span>
-    <span class="c1"># architecture      &quot;architecture&quot;</span>
-    <span class="c1"># raw_vhdl = _get_raw_vhdl(buffer)</span>
-    <span class="c1"># print(raw_vhdl)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s2">&quot;(architecture\s+[a-z0-9_]+\s+of\s+[a-z0-9_]+\s+is.*end\s+[a-z0-9_]+\s*;)&quot;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s2">&quot;(architecture\s+\w+\s+of\s+\w+\s+is.*end\s+\w+\s*;)&quot;</span><span class="p">,</span>
         <span class="n">_get_raw_vhdl</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span>
         <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">architecture</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="c1"># print(architecture)</span>
     <span class="k">return</span> <span class="n">architecture</span></div>
 
 
