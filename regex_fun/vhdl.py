@@ -317,7 +317,6 @@ def get_architecture(buffer: str) -> Optional[str]:
     if m is None:
         return None
     architecture = m.group(1)
-    print(architecture)
     return architecture
 
 
