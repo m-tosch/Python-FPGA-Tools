@@ -10,6 +10,6 @@ end dummy;
 
   -- no signals
 
-  -- no process
+  -- no processes
 
 
