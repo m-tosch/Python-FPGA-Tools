@@ -156,7 +156,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         def_val = gt.split(":=")[1].strip() if ":=" in gt else None
         _generic_def_vals.append(def_val)
 
-    # account for  multiple port names in the same line, separated by a comma
+    # account for  multiple generic names in the same line, separated by comma
     count = [_gn.count(",") + 1 for _gn in _generic_names]
     # correct generic names list. every generic variable is an entry in a list
     generic_names = [gn for _gn in _generic_names for gn in _gn.split(",")]
@@ -255,7 +255,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         r":\s*[a-z]{2,}\s+(.+?)\s*(?:\)\s*;|;)", port_str, flags=re.IGNORECASE,
     )
 
-    # account for  multiple port names in the same line, separated by a comma
+    # account for  multiple port names in the same line, separated by comma
     count = [_pn.count(",") + 1 for _pn in _port_names]
     # correct port names list. every port variable is an entry in the list
     port_names = [pn for _pn in _port_names for pn in _pn.split(",")]
