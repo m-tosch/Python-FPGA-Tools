@@ -58,6 +58,7 @@ class TestVHDLmodule(unittest.TestCase):
         smoke = "architecture behavioral of module is" in architecture
         self.assertTrue(smoke)
 
+    ######## remove these two soon
     def test_empty_ports(self):
         # arrange
         entity_str = "entity a is  end entity;"
@@ -73,6 +74,8 @@ class TestVHDLmodule(unittest.TestCase):
         generics = vhdl.get_generics(entity_str)
         # assert
         self.assertIsNone(generics)
+
+    #########
 
     def test_no_input(self):
         # arrange
