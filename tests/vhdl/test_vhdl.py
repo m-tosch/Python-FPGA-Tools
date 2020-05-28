@@ -29,6 +29,18 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(entity, expected)
         self.assertIsNotNone(entity)
 
+    def test_module_generics(self):
+        # action
+        generics = vhdl.get_generics(self.module)
+        expected = [
+            ("N", "integer", "42"),
+            ("M", "std_logic", None),
+            ("O", "std_logic", None),
+        ]
+        # assert
+        self.assertEqual(generics, expected)
+        self.assertIsNotNone(generics)
+
     def test_module_ports(self):
         # action
         ports = vhdl.get_ports(self.module)
@@ -43,18 +55,6 @@ class TestVHDL(unittest.TestCase):
         # assert
         self.assertEqual(ports, expected)
         self.assertIsNotNone(ports)
-
-    def test_module_generics(self):
-        # action
-        generics = vhdl.get_generics(self.module)
-        expected = [
-            ("N", "integer", "42"),
-            ("M", "std_logic", None),
-            ("O", "std_logic", None),
-        ]
-        # assert
-        self.assertEqual(generics, expected)
-        self.assertIsNotNone(generics)
 
     def test_module_architecture(self):
         # action
