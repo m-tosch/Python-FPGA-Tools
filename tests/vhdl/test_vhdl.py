@@ -63,14 +63,6 @@ class TestVHDL(unittest.TestCase):
         smoke = "architecture behavioral of module is" in architecture
         self.assertTrue(smoke)
 
-    def test_empty_entity(self):
-        # arrange
-        nothing = ""
-        # action
-        entity = vhdl.get_entity(nothing)
-        # assert
-        self.assertIsNone(entity)
-
     def test_empty_ports(self):
         # arrange
         entity_str = "entity a is  end entity;"
@@ -91,10 +83,12 @@ class TestVHDL(unittest.TestCase):
         # arrange
         nothing = ""
         # action
+        entity = vhdl.get_entity(nothing)
         ports = vhdl.get_ports(nothing)
         generics = vhdl.get_generics(nothing)
         architecture = vhdl.get_architecture(nothing)
         # assert
+        self.assertIsNone(entity)
         self.assertIsNone(ports)
         self.assertIsNone(generics)
         self.assertIsNone(architecture)
