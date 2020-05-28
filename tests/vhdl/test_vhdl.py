@@ -3,17 +3,12 @@ import re
 from regex_fun import vhdl
 
 
-class TestVHDL(unittest.TestCase):
+class TestVHDLmodule(unittest.TestCase):
     def setUp(self):
         with open("tests/vhdl/module.vhd", "r") as f:
             self.module = f.read()
-        with open("tests/vhdl/constants.vhd", "r") as f:
-            self.constants = f.read()
 
-    # def tearDown(self):
-    #     pass
-
-    def test_module_entity(self):
+    def test_entity(self):
         # action
         entity = vhdl.get_entity(self.module)
         expected = """entity module is
@@ -29,7 +24,7 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(entity, expected)
         self.assertIsNotNone(entity)
 
-    def test_module_generics(self):
+    def test_generics(self):
         # action
         generics = vhdl.get_generics(self.module)
         expected = [
@@ -41,7 +36,7 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(generics, expected)
         self.assertIsNotNone(generics)
 
-    def test_module_ports(self):
+    def test_ports(self):
         # action
         ports = vhdl.get_ports(self.module)
         expected = [
@@ -56,7 +51,7 @@ class TestVHDL(unittest.TestCase):
         self.assertEqual(ports, expected)
         self.assertIsNotNone(ports)
 
-    def test_module_architecture(self):
+    def test_architecture(self):
         # action
         architecture = vhdl.get_architecture(self.module)
         # assert
@@ -93,6 +88,12 @@ class TestVHDL(unittest.TestCase):
         self.assertIsNone(generics)
         self.assertIsNone(architecture)
 
+
+class TestVHDLpackage(unittest.TestCase):
+    def setUp(self):
+        with open("tests/vhdl/constants.vhd", "r") as f:
+            self.constants = f.read()
+
     def test_constants(self):
         # action
         constants = vhdl.get_constants(self.constants)
@@ -112,7 +113,7 @@ class TestVHDL(unittest.TestCase):
         # assert
         self.assertEqual(constants, expected)
 
-    def test_empty_constants(self):
+    def test_no_input(self):
         # arrange
         nothing = ""
         # action
