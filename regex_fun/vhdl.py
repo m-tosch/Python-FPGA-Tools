@@ -291,17 +291,17 @@ def get_architecture(buffer: str) -> Optional[str]:
     # (                 begin of capture group---------------------ARCHITECTURE
     #     architecture  "architecture"
     #     \s+           one or more whitespaces
-    #     \w+           one or more word characters a-z0-9_
+    #     \w+           one or more word characters
     #     \s+           one or more whitespaces
     #     of            "of"
     #     \s+           one or more whitespaces
-    #     \w+           one or more word characters a-z0-9_
+    #     \w+           one or more word characters
     #     \s+           one or more whitespaces
     #     is            "is"
     #     .*            any character zero or more times
     #     end           "end"
     #     \s+           one or more whitespaces
-    #     \w+           one or more word characters a-z0-9_
+    #     \w+           one or more word characters
     #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of capture group
