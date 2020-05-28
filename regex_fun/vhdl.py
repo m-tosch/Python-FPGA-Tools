@@ -47,27 +47,23 @@ def get_entity(buffer: str) -> Optional[str]:
     Returns:
         Optional[str]: entity string
     """
-    # [^- ]             anything that is NOT a dash or whitespace
-    # +                 one or more times
-    # \s*               zero or more whitespaces
     # (                 begin of capture group---------------------------ENTITY
     #     entity        "entity"
     #     \s+           one or more whitespaces
-    #     .+            any character one or more times
+    #     \w+           one or more word characters
     #     \s+           one or more whitespaces
     #     is            "is"
-    #     .*            any character zero or more times (->generics and ports)
+    #     .+?           any character one or more times. lazy evaluation
     #     end           "end"
     #     \s+           one or more whitespaces
-    #     .*            any character zero or more times
+    #     \w+           one or more word characters
+    #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of capture group
-    # \s*               zero or more whitespaces
-    # architecture      "architecture"
     m = re.search(
-        r"[^- ]+\s*(entity\s+.+\s+is.*end\s+.*;)\s*architecture",
+        r"(entity\s+\w+\s+is.+?end\s+\w+\s*;)",
         _get_raw_vhdl(buffer),
-        flags=re.IGNORECASE,
+        flags=re.IGNORECASE | re.DOTALL,
     )
     if m is None:
         return None
