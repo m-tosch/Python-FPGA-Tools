@@ -96,7 +96,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     entity = get_entity(buffer)
     if entity is None:
         return None
-    # (                 begin of capture group
+    # (                 begin of capture group------------------ENTITY GENERICS
     #     generic       "generic"
     #     \s*           zero or more whitespaces
     #     \(            opening parenthesis
@@ -131,7 +131,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # optional
     # :                 double colon
     # \s*               zero or more whitespaces
-    # (                 begin of capture group----------------------------TYPES
+    # (                 begin of capture group-----------TYPES & DEFAULT VALUES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
     # \s*               zero or more whitespaces
@@ -338,7 +338,7 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     buffer = _get_raw_vhdl(buffer)
     # constant          "constant"
     # \s+               one or more whitespaces
-    # (                 begin of capture group
+    # (                 begin of capture group----------------------------NAMES
     #     [a-z]         identifiers must begin with a letter
     #     [a-z_0-9]*    any letter, underscore or digit. zero or more times
     # )                 end of capture group
@@ -351,7 +351,7 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         return None
     # :                 double colon
     # \s*               zero or more whitespaces
-    # (                 begin of capture group
+    # (                 begin of capture group----------------------------TYPES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
     # \s*               zero or more whitespaces
@@ -359,7 +359,7 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     constant_types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
     # :=                double colon and equals sign
     # \s*               zero or more whitespaces
-    # (                 begin of capture group
+    # (                 begin of capture group-------------------DEFAULT VALUES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
     # \s*               zero or more whitespaces
