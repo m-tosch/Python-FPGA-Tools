@@ -7,7 +7,7 @@ generic(N : integer := 42;
 port(  clk,clk2,clk10   : in std_logic;
        reset : inout std_logic;
        p1,p2   : out std_logic_vector(N-1 downto 0));
-end module;
+end  module;
 
 architecture behavioral of module is
 
