@@ -324,10 +324,12 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     the input, they are parsed. If nothing is found that could be parsed, the
     function returns None. If the generic parameters could be parsed, they are
     returned with their individual properties.
+
     A constant consists of the following properties:
-    - name
-    - type
-    - default value
+
+    - name\n
+    - type\n
+    - default value\n
 
     Args:
         buffer (str): input string
