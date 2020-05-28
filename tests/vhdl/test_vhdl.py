@@ -7,8 +7,6 @@ class TestVHDL(unittest.TestCase):
     def setUp(self):
         with open("tests/vhdl/module.vhd", "r") as f:
             self.module = f.read()
-        with open("tests/vhdl/dummy.vhd", "r") as f:
-            self.dummy = f.read()
         with open("tests/vhdl/constants.vhd", "r") as f:
             self.constants = f.read()
 
@@ -75,36 +73,30 @@ class TestVHDL(unittest.TestCase):
 
     def test_empty_ports(self):
         # arrange
-        nothing = ""
+        entity_str = "entity a is  end entity;"
         # action
-        ports = vhdl.get_ports(nothing)
+        ports = vhdl.get_ports(entity_str)
         # assert
         self.assertIsNone(ports)
 
     def test_empty_generics(self):
         # arrange
+        entity_str = "entity a is  end entity;"
+        # action
+        generics = vhdl.get_generics(entity_str)
+        # assert
+        self.assertIsNone(generics)
+
+    def test_no_input(self):
+        # arrange
         nothing = ""
         # action
+        ports = vhdl.get_ports(nothing)
         generics = vhdl.get_generics(nothing)
-        # assert
-        self.assertIsNone(generics)
-
-    def test_no_ports(self):
-        # action
-        ports = vhdl.get_ports(self.dummy)
+        architecture = vhdl.get_architecture(nothing)
         # assert
         self.assertIsNone(ports)
-
-    def test_no_generics(self):
-        # action
-        generics = vhdl.get_generics(self.dummy)
-        # assert
         self.assertIsNone(generics)
-
-    def test_no_architecture(self):
-        # action
-        architecture = vhdl.get_architecture(self.dummy)
-        # assert
         self.assertIsNone(architecture)
 
     def test_constants(self):
