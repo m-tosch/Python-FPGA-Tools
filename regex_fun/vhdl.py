@@ -7,7 +7,7 @@ def _get_raw_vhdl(buffer: str) -> str:
 
     The input is expected to be a string representing vhdl file content.
     - All valid VHDL comments are removed
-    - All whitespaces/tabs/line breaks are replaced by a single whitespace
+    - All whitespaces/tabs/new lines are replaced by a single whitespace
     If it could be changed, the modified input string is returned. If the
     input string could not be changed, it is returned.
 
@@ -19,15 +19,14 @@ def _get_raw_vhdl(buffer: str) -> str:
     """
     # remove all VHDL comments
     # (                 begin of capture group
-    #     \s*           zero or more whitespaces
     #     --            two dashes
     # )                 end of capture group
-    # .*                any character zero or more times
-    # \n?               line break. lazy evaluation
-    buffer = re.sub(r"(\s*--).*\n?", "", buffer, flags=re.MULTILINE)
+    # .*?               any character zero or more times. lazy evaluation
+    # \n                new line
+    buffer = re.sub(r"(--).*?\n", "", buffer)
     # substitute all tabs, newlines, whitespaces with a single whitespace
     # the .strip() removes any leading and trailing whitespaces
-    # \s+               one ore more whitespaces
+    # \s+               one or more whitespaces
     buffer = re.sub(r"\s+", " ", buffer).strip()
     return buffer
 
@@ -92,16 +91,11 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     Returns:
         List[Tuple[str, str, str]]: generic names, types and default values
     """
-    # extract the entity string if it exists
-    entity = get_entity(buffer)
-    if entity is None:
-        return None
-
     # (                 begin of capture group------------------ENTITY GENERICS
     #     generic       "generic"
     #     \s*           zero or more whitespaces
     #     \(            opening parenthesis
-    #     .*            any character zero or more times
+    #     .*?           any character zero or more times. lazy evaluation
     #     \)            closing parenthesis
     #     \s*           zero or more whitespaces
     #     ;             semicolon
@@ -111,7 +105,9 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # \s*               zero or more whitespaces
     # \(                opening parenthesis
     m = re.search(
-        r"(generic\s*\(.*\)\s*;)\s*port\s*\(", entity, flags=re.IGNORECASE
+        r"(generic\s*\(.*?\)\s*;)\s*port\s*\(",
+        _get_raw_vhdl(buffer),
+        flags=re.IGNORECASE,
     )
     if m is None:
         return None
@@ -196,22 +192,22 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     Returns:
         Optional[List[Tuple[str, str, str]]]: port names, direction and types
     """
-    # extract the entity string if it exists
-    entity = get_entity(buffer)
-    if entity is None:
-        return None
     # (                 begin of capture group---------------------ENTITY PORTS
     #     port          "port"
     #     \s*           zero or more whitespaces
     #     \(            opening parenthesis
-    #     .*            any character zero or more times
+    #     .*?           any character zero or more times. lazy evaluation
     #     \)            closing parenthesis
     #     \s*           zero or more whitespaces
     #     ;             semicolon
     # )                 end of capture group
     # \s*               zero or more whitespaces
     # end               "end"
-    m = re.search(r"(port\s*\(.*\)\s*;)\s*end", entity, flags=re.IGNORECASE)
+    m = re.search(
+        r"(port\s*\(.*?\)\s*;)\s*end",
+        _get_raw_vhdl(buffer),
+        flags=re.IGNORECASE,
+    )
     if m is None:
         return None
     port_str = m.group(1)
