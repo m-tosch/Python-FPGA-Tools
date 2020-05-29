@@ -1,6 +1,5 @@
 import re
 from typing import Tuple, List, Optional
-
 from functools import wraps
 
 
@@ -127,7 +126,8 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # generic variable names
     # (                 begin of capture group----------------------------NAMES
     #     [a-z]         lowercase letter (identifiers must begin with a letter)
-    #     [a-z_0-9]*    lowercase letter/underscore/digit. zero or more times
+    #     [a-z_0-9]     lowercase letter/underscore/digit or comma
+    #     *             zero or more times
     # )                 end of capture group
     # \s*               zero or more whitespace characters
     # :                 double colon
