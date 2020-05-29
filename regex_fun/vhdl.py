@@ -63,7 +63,7 @@ def get_entity(buffer: str) -> Optional[str]:
     m = re.search(
         r"(entity\s+\w+\s+is.+?end\s+\w+\s*;)",
         _get_raw_vhdl(buffer),
-        flags=re.IGNORECASE | re.DOTALL,
+        flags=re.IGNORECASE | re.DOTALL,  # the DOTALL may not be necessary..
     )
     if m is None:
         return None
@@ -96,6 +96,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     entity = get_entity(buffer)
     if entity is None:
         return None
+
     # (                 begin of capture group------------------ENTITY GENERICS
     #     generic       "generic"
     #     \s*           zero or more whitespaces
