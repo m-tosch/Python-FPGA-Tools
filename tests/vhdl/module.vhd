@@ -15,11 +15,12 @@ signal s1 : std_logic:='1';
 signal s2 :integer range 0 to N-1  := 0;
 signal s3:std_logic_vector(N-1 downto 0) := (others=>0);
 
-begin of
+begin
 
-process(clk, reset)
--- some vhdl code
-end process;
+
+nand : process(clk, reset)
+  -- some code
+end process nand;
 
 -- more processes
 
