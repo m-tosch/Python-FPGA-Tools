@@ -82,12 +82,16 @@ class TestVHDLpackage(unittest.TestCase):
         # action
         constants = vhdl.get_constants(self.constants)
         expected = [
-            ("Artorius", "integer range 0 to 2000", "1000"),
+            ("A", "integer range 0 to 2000", "1000"),
+            ("B", "integer range 0 to 2000", "1000"),
+            ("C", "integer range 0 to 2000", "1000"),
             ("Benedictus", "integer range 0 to 1", "0"),
             ("Leonardus_MAX", "integer range 4 to 4", "4"),
             ("Constans", "integer range 1 to Leonardus_MAX", "1"),
             ("Rogerius", "integer range 0 to 10000", "7999"),
             ("Elias", "std_logic_vector(31 downto 0)", 'x"00000001"'),
+            ("D", "std_logic_vector(31 downto 0)", 'x"00000001"'),
+            ("F", "std_logic_vector(31 downto 0)", 'x"00000001"'),
             ("Dorothea", "integer range 0 to 255", "42"),
             ("Dominicus", "integer range 0 to 2**17", "12500"),
             ("Justinus", "std_logic_vector(31 downto 0)", 'x"00000000"'),
