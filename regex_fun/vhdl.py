@@ -1,36 +1,44 @@
 import re
 from typing import Tuple, List, Optional
 
+from functools import wraps
 
-def _get_raw_vhdl(buffer: str) -> str:
-    """Removes VHDL comments and whitespace characters
 
-    The input is expected to be a string representing vhdl file content.
-    - All valid VHDL comments are removed
-    - All whitespaces/tabs/new lines are replaced by a single whitespace
-    If it could be changed, the modified input string is returned. If the
-    input string could not be changed, it is returned.
+def _raw(func):
+    """Decorator for removing VHDL comments and whitespace characters
+
+    The input is expected to be a function with one argument that is a string
+    representing vhdl file content.
+
+    Two processing steps are executed:
+
+    - All valid VHDL comments are removed\n
+    - All whitespaces/tabs/new lines are replaced by a single whitespace\n
 
     Args:
-        buffer (str): input string
-
-    Returns:
-        str: modified input string
+        func ([type]): input function to decorate
     """
-    # remove all VHDL comments
-    # (                 begin of capture group
-    #     --            two dashes
-    # )                 end of capture group
-    # .*?               any character zero or more times. lazy evaluation
-    # \n                new line
-    buffer = re.sub(r"(--).*?\n", "", buffer)
-    # substitute all tabs, newlines, whitespaces with a single whitespace
-    # the .strip() removes any leading and trailing whitespace characters
-    # \s+               one or more whitespace characters
-    buffer = re.sub(r"\s+", " ", buffer).strip()
-    return buffer
+
+    @wraps(func)
+    def get_raw_vhdl(*args, **kwargs):
+        # remove all VHDL comments
+        # (                 begin of capture group
+        #     --            two dashes
+        # )                 end of capture group
+        # .*?               any character zero or more times. lazy evaluation
+        # \n                new line
+        buffer = re.sub(r"(--).*?\n", "", *args)
+        # substitute all tabs, newlines, whitespaces with a single whitespace
+        # the .strip() removes any leading and trailing whitespace characters
+        # \s+               one or more whitespace characters
+        buffer = re.sub(r"\s+", " ", buffer).strip()
+        # call function
+        func(buffer)
+
+    return get_raw_vhdl
 
 
+@_raw
 def get_entity(buffer: str) -> Optional[str]:
     """Parses the entity out of an input string
 
@@ -61,7 +69,7 @@ def get_entity(buffer: str) -> Optional[str]:
     # )                 end of capture group
     m = re.search(
         r"(entity\s+\w+\s+is.+?end\s+\w+\s*;)",
-        _get_raw_vhdl(buffer),
+        buffer,
         flags=re.IGNORECASE | re.DOTALL,  # the DOTALL may not be necessary..
     )
     if m is None:
@@ -70,6 +78,7 @@ def get_entity(buffer: str) -> Optional[str]:
     return entity
 
 
+@_raw
 def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """Parses entity generics out of an input string
 
@@ -105,9 +114,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # \s*               zero or more whitespace characters
     # \(                opening parenthesis
     m = re.search(
-        r"(generic\s*\(.*?\)\s*;)\s*port\s*\(",
-        _get_raw_vhdl(buffer),
-        flags=re.IGNORECASE,
+        r"(generic\s*\(.*?\)\s*;)\s*port\s*\(", buffer, flags=re.IGNORECASE,
     )
     if m is None:
         return None
@@ -171,6 +178,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     return generics
 
 
+@_raw
 def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """Parses entity ports out of an input string
 
@@ -203,11 +211,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # )                 end of capture group
     # \s*               zero or more whitespace characters
     # end               "end"
-    m = re.search(
-        r"(port\s*\(.*?\)\s*;)\s*end",
-        _get_raw_vhdl(buffer),
-        flags=re.IGNORECASE,
-    )
+    m = re.search(r"(port\s*\(.*?\)\s*;)\s*end", buffer, flags=re.IGNORECASE)
     if m is None:
         return None
     port_str = m.group(1)
@@ -269,6 +273,7 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     return ports
 
 
+@_raw
 def get_architecture(buffer: str) -> Optional[str]:
     """Parses the architecture out of an input string
 
@@ -304,7 +309,7 @@ def get_architecture(buffer: str) -> Optional[str]:
     # )                 end of capture group
     m = re.search(
         r"(architecture\s+\w+\s+of\s+\w+\s+is.*end\s+\w+\s*;)",
-        _get_raw_vhdl(buffer),
+        buffer,
         flags=re.IGNORECASE,
     )
     if m is None:
@@ -313,6 +318,7 @@ def get_architecture(buffer: str) -> Optional[str]:
     return architecture
 
 
+@_raw
 def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """Parses constants out of an input string 43
 
@@ -334,7 +340,6 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     Returns:
         List[Tuple[str, str, str]]: constants names, types and default values
     """
-    buffer = _get_raw_vhdl(buffer)
     # constant          "constant"
     # \s+               one or more whitespace characters
     # (                 begin of capture group----------------------------NAMES
