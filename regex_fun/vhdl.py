@@ -3,7 +3,7 @@ from typing import Tuple, List, Optional
 
 
 def _get_raw_vhdl(buffer: str) -> str:
-    """Removes VHDL comments and whitespaces
+    """Removes VHDL comments and whitespace characters
 
     The input is expected to be a string representing vhdl file content.
     - All valid VHDL comments are removed
@@ -25,8 +25,8 @@ def _get_raw_vhdl(buffer: str) -> str:
     # \n                new line
     buffer = re.sub(r"(--).*?\n", "", buffer)
     # substitute all tabs, newlines, whitespaces with a single whitespace
-    # the .strip() removes any leading and trailing whitespaces
-    # \s+               one or more whitespaces
+    # the .strip() removes any leading and trailing whitespace characters
+    # \s+               one or more whitespace characters
     buffer = re.sub(r"\s+", " ", buffer).strip()
     return buffer
 
@@ -48,15 +48,15 @@ def get_entity(buffer: str) -> Optional[str]:
     """
     # (                 begin of capture group---------------------------ENTITY
     #     entity        "entity"
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     \w+           one or more word characters
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     is            "is"
     #     .+?           any character one or more times. lazy evaluation
     #     end           "end"
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     \w+           one or more word characters
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     # )                 end of capture group
     m = re.search(
@@ -93,16 +93,16 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """
     # (                 begin of capture group------------------ENTITY GENERICS
     #     generic       "generic"
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     \(            opening parenthesis
     #     .*?           any character zero or more times. lazy evaluation
     #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # port              "port"
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # \(                opening parenthesis
     m = re.search(
         r"(generic\s*\(.*?\)\s*;)\s*port\s*\(",
@@ -117,7 +117,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     #     [a-z]         lowercase letter (identifiers must begin with a letter)
     #     [a-z_0-9]*    lowercase letter/underscore/digit. zero or more times
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # :                 double colon
     # [^=]              any character that is not an equal sign
     _generic_names = re.findall(
@@ -127,16 +127,16 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # used to identify the type and default value, but the default value is
     # optional
     # :                 double colon
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (                 begin of capture group-----------TYPES & DEFAULT VALUES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (?:               begin of non-capture group
     #     ;             semicolon
     #     |             OR
     #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     # )                 end of non-capture group
     __generic_type_to_end = re.findall(
@@ -194,14 +194,14 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """
     # (                 begin of capture group---------------------ENTITY PORTS
     #     port          "port"
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     \(            opening parenthesis
     #     .*?           any character zero or more times. lazy evaluation
     #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # end               "end"
     m = re.search(
         r"(port\s*\(.*?\)\s*;)\s*end",
@@ -217,33 +217,33 @@ def get_ports(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     #     [a-z_0-9,]    lowercase letter/underscore/digit or comma
     #     *             zero or more times
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # :                 double colon
     _port_names = re.findall(
         r"([a-z][a-z_0-9,]*)\s*:", port_str, flags=re.IGNORECASE
     )
     # port directions (in, out, inout, buffer)
     # :                 double colon
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (                 begin of capture group------------------------DIRECTION
     #     [a-z]{2,}     lowercase letter. two or more times (shortest is "in")
     # )                 end of capture group
-    # \s+               one or more whitespaces
+    # \s+               one or more whitespace characters
     _port_dirs = re.findall(
         r":\s*([a-z]{2,})\s+", port_str, flags=re.IGNORECASE
     )
     # port types (e.g. std_logic)
     # :                 double colon
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # [a-z]{2,}         lowercase letter. two or more times
-    # \s+               one or more whitespaces
+    # \s+               one or more whitespace characters
     # (                 begin of capture group----------------------------TYPES
     #     .+?           any character one or more times. lazy evaluation
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (?:               begin of non-capture group
     #     \)            closing parenthesis
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     #     |             OR
     #     ;             semicolon
@@ -287,19 +287,19 @@ def get_architecture(buffer: str) -> Optional[str]:
     """
     # (                 begin of capture group---------------------ARCHITECTURE
     #     architecture  "architecture"
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     \w+           one or more word characters
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     of            "of"
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     \w+           one or more word characters
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     is            "is"
     #     .*            any character zero or more times
     #     end           "end"
-    #     \s+           one or more whitespaces
+    #     \s+           one or more whitespace characters
     #     \w+           one or more word characters
-    #     \s*           zero or more whitespaces
+    #     \s*           zero or more whitespace characters
     #     ;             semicolon
     # )                 end of capture group
     m = re.search(
@@ -336,12 +336,12 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     """
     buffer = _get_raw_vhdl(buffer)
     # constant          "constant"
-    # \s+               one or more whitespaces
+    # \s+               one or more whitespace characters
     # (                 begin of capture group----------------------------NAMES
     #     [a-z]         identifiers must begin with a letter
     #     [a-z_0-9]*    any letter, underscore or digit. zero or more times
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # :                 double colon
     constant_names = re.findall(
         r"constant\s+([a-z][a-z_0-9]*)\s*:", buffer, flags=re.IGNORECASE,
@@ -349,19 +349,19 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     if constant_names == []:
         return None
     # :                 double colon
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (                 begin of capture group----------------------------TYPES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # :=                double colon and equals sign
     constant_types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
     # :=                double colon and equals sign
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # (                 begin of capture group-------------------DEFAULT VALUES
     #     .*?           any character zero or more times. lazy evaluation
     # )                 end of capture group
-    # \s*               zero or more whitespaces
+    # \s*               zero or more whitespace characters
     # ;                 semicolon
     constant_def_vals = re.findall(
         r":=\s*(.*?)\s*;", buffer, flags=re.IGNORECASE
