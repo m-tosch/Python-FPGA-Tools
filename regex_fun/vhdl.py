@@ -165,7 +165,7 @@ def get_generics(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
         def_val = gt.split(":=")[1].strip() if ":=" in gt else None
         _generic_def_vals.append(def_val)
 
-    # account for  multiple generic names in the same line, separated by comma
+    # account for multiple generic names in the same line, separated by comma
     count = [_gn.count(",") + 1 for _gn in _generic_names]
     # correct generic names list. every generic variable is an entry in a list
     generic_names = [gn for _gn in _generic_names for gn in _gn.split(",")]
@@ -349,14 +349,15 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # \s+               one or more whitespace characters
     # (                 begin of capture group----------------------------NAMES
     #     [a-z]         identifiers must begin with a letter
-    #     [a-z_0-9]*    any letter, underscore or digit. zero or more times
+    #     [a-z_0-9,]    lowercase letter/underscore/digit or comma
+    #     *             zero or more times
     # )                 end of capture group
     # \s*               zero or more whitespace characters
     # :                 double colon
-    constant_names = re.findall(
-        r"constant\s+([a-z][a-z_0-9]*)\s*:", buffer, flags=re.IGNORECASE,
+    _constant_names = re.findall(
+        r"constant\s+([a-z][a-z_0-9,]*)\s*:", buffer, flags=re.IGNORECASE,
     )
-    if constant_names == []:
+    if _constant_names == []:
         return None
     # :                 double colon
     # \s*               zero or more whitespace characters
@@ -365,7 +366,9 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # )                 end of capture group
     # \s*               zero or more whitespace characters
     # :=                double colon and equals sign
-    constant_types = re.findall(r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE)
+    _constant_types = re.findall(
+        r":\s*(.*?)\s*:=", buffer, flags=re.IGNORECASE
+    )
     # :=                double colon and equals sign
     # \s*               zero or more whitespace characters
     # (                 begin of capture group-------------------DEFAULT VALUES
@@ -373,9 +376,20 @@ def get_constants(buffer: str) -> Optional[List[Tuple[str, str, str]]]:
     # )                 end of capture group
     # \s*               zero or more whitespace characters
     # ;                 semicolon
-    constant_def_vals = re.findall(
+    _constant_def_vals = re.findall(
         r":=\s*(.*?)\s*;", buffer, flags=re.IGNORECASE
     )
+
+    # account for multiple constant names in the same line, separated by comma
+    count = [_cn.count(",") + 1 for _cn in _constant_names]
+    # correct constant names list. every constant is an entry in a list
+    constant_names = [cn for _cn in _constant_names for cn in _cn.split(",")]
+    # correct constant types and default values. expand lists depending oncount
+    constant_types, constant_def_vals = [], []
+    for c, _ct, _cd in zip(count, _constant_types, _constant_def_vals):
+        constant_types.extend([_ct] * c)
+        constant_def_vals.extend([_cd] * c)
+
     # constant names, types and default values as a list of tuples
     constants = [
         (cn, ct, cd)
