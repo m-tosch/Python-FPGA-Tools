@@ -20,7 +20,9 @@ def _raw(func):
     """
 
     @wraps(func)
-    def get_raw_vhdl(*args, **kwargs):
+    def inner(*args, **kwargs):
+        assert len(args) == 1, "number of arguments must be 1"
+        assert type(*args) is str, "argument type must be string"
         # remove all VHDL comments
         # (                 begin of capture group
         #     --            two dashes
@@ -32,10 +34,13 @@ def _raw(func):
         # the .strip() removes any leading and trailing whitespace characters
         # \s+               one or more whitespace characters
         buffer = re.sub(r"\s+", " ", buffer).strip()
+        # add back to args
+        args = list(args)
+        args[0] = buffer
         # call function
-        func(buffer)
+        return func(*args, **kwargs)
 
-    return get_raw_vhdl
+    return inner
 
 
 @_raw
