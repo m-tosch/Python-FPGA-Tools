@@ -58,16 +58,6 @@ class TestVHDLmodule(unittest.TestCase):
         smoke = "architecture behavioral of module is" in architecture
         self.assertTrue(smoke)
 
-    def test_no_input(self):
-        # arrange
-        nothing = ""
-        # action
-        ports = vhdl.get_ports(nothing)
-        architecture = vhdl.get_architecture(nothing)
-        # assert
-        self.assertIsNone(ports)
-        self.assertIsNone(architecture)
-
     def test_no_entity(self):
         # arrange
         nothing = ""
@@ -91,6 +81,14 @@ class TestVHDLmodule(unittest.TestCase):
         ports = vhdl.get_ports(nothing)
         # assert
         self.assertIsNone(ports)
+
+    def test_no_architecture(self):
+        # arrange
+        nothing = ""
+        # action
+        architecture = vhdl.get_architecture(nothing)
+        # assert
+        self.assertIsNone(architecture)
 
 
 class TestVHDLpackage(unittest.TestCase):
