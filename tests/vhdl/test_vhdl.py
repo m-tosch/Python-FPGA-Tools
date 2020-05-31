@@ -63,11 +63,9 @@ class TestVHDLmodule(unittest.TestCase):
         nothing = ""
         # action
         ports = vhdl.get_ports(nothing)
-        generics = vhdl.get_generics(nothing)
         architecture = vhdl.get_architecture(nothing)
         # assert
         self.assertIsNone(ports)
-        self.assertIsNone(generics)
         self.assertIsNone(architecture)
 
     def test_no_entity(self):
@@ -77,6 +75,14 @@ class TestVHDLmodule(unittest.TestCase):
         entity = vhdl.get_entity(nothing)
         # assert
         self.assertIsNone(entity)
+
+    def test_no_generics(self):
+        # arrange
+        nothing = ""
+        # action
+        generics = vhdl.get_generics(nothing)
+        # assert
+        self.assertIsNone(generics)
 
 
 class TestVHDLpackage(unittest.TestCase):
