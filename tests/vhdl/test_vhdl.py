@@ -84,6 +84,14 @@ class TestVHDLmodule(unittest.TestCase):
         # assert
         self.assertIsNone(generics)
 
+    def test_no_ports(self):
+        # arrange
+        nothing = ""
+        # action
+        ports = vhdl.get_ports(nothing)
+        # assert
+        self.assertIsNone(ports)
+
 
 class TestVHDLpackage(unittest.TestCase):
     def setUp(self):
