@@ -44,6 +44,6 @@ To generate an html report run
 coverage html
 ```
 
-view the report by opening the index.html file inside the generated /htmlcov folder in a browser
+view the report by opening the index.html file inside the generated /htmlcov folder in a browser.
 
 To generate other report forms, see the [cmd line usage](https://coverage.readthedocs.io/en/coverage-5.1/cmd.html) for the `coverage` package
